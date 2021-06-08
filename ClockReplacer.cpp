@@ -4,13 +4,13 @@
 #include <queue>
 using namespace std;
 
-class current {
+class frame{
 private:
     bool referenceBit;
     int pinCount;
     
 public:
-    current(){
+    frame(){
         referenceBit = false;
         pinCount=0;
     }
@@ -46,6 +46,14 @@ queue<int> removePinFromQueue(queue<int> q, int pin){
     return q;
 }
 
+frame Candiate(frame buffer[], int i)
+{
+    return buffer[i];
+}
+
+int sizeOfQueue (queue<int> q){
+    return q.size();
+}
 int main(){
     ifstream fin("input.txt");
     ofstream fout("output.txt");
@@ -54,7 +62,7 @@ int main(){
     queue<int> oldest;
 
     fin>>count;
-    current buffer[count];
+    frame buffer[count];
     while (fin.eof() == false){
         string currentStep;
         fin>>currentStep;
@@ -62,18 +70,22 @@ int main(){
             buffer[currentStep[1]-49].unpin();
             if( buffer[currentStep[1]-49].getPinCount() == 0)
                 oldest.push(currentStep[1]-48);
+            cout<<"after U length of queue="<<sizeOfQueue(oldest)<<endl;
         }
         else if(currentStep[0] == 'P'){
             buffer[currentStep[1]-49].pin();
             oldest= removePinFromQueue(oldest,currentStep[1]-48);
+            cout<<"after P length of queue="<<sizeOfQueue(oldest)<<endl;
         }
 
         else if(currentStep[0] == 'R'){
             buffer[currentStep[1]-49].replace();
             int refer = oldest.front();
+            frame currentCandidate = Candiate(buffer,refer);
             fout<<refer<<"\t";
             oldest.pop();
             oldest.push(refer);
+            cout<<"after R length of queue="<<sizeOfQueue(oldest)<<endl;
         }
     }
 
