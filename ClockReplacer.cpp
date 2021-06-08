@@ -53,7 +53,7 @@ int main(){
                 j++;
             int i=j+1;
             j++;
-            fout<< i<<"\t";
+            fout<<i<<"\t";
         }
     }
     return 0;
