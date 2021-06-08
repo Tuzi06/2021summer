@@ -5,38 +5,29 @@ using namespace std;
 
 class current {
 private:
-    bool use;
     bool replace;
     int pinCount;
     
 public:
     current(){
-        use = false;
         replace = false;
         pinCount=0; //unpin
     }
     void replacement(){
-        use = true;
         replace = true;
     }
     void pin(){
-        use = true;
         pinCount++;
     }
     void unpin(){
-        use = true;
         if(pinCount >0)
             pinCount--;
     }
-    bool getReplacement(){
-        return replace;
-    }
+
     int getPinCount(){
         return pinCount;
     }
-    bool getUse(){
-        return use;
-    }
+    
 };
 
 int main(){
