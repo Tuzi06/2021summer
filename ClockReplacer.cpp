@@ -6,16 +6,16 @@ using namespace std;
 
 class current {
 private:
-    bool candidate;
+    bool referenceBit;
     int pinCount;
     
 public:
     current(){
-        candidate = false;
+        referenceBit = false;
         pinCount=0;
     }
     void replace(){
-        candidate = true;
+        referenceBit = true;
     }
     void pin(){
         pinCount++;
@@ -29,8 +29,8 @@ public:
         return pinCount;
     }
 
-    bool getCandidate(){
-        return candidate;
+    bool getRefernceBit(){
+        return referenceBit;
     }
     
 };
