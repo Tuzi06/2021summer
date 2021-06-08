@@ -12,7 +12,7 @@ private:
 public:
     current(){
         candidate = false;
-        pinCount=0; //unpin
+        pinCount=0;
     }
     void replace(){
         candidate = true;
@@ -76,6 +76,6 @@ int main(){
             oldest.push(refer);
         }
     }
-    
+
     return 0;
 }
