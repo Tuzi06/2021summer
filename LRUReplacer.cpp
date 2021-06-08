@@ -18,7 +18,10 @@ queue<string*> removePinFromQueue(queue<string*> q ,string s){
 int sizeOfQueue (queue<string*> q){
     return q.size();
 }
-
+string* Candidate(queue <string*> q){
+    string* candidate = q.front();
+    return candidate;
+}
 int main(){
     ifstream fin("input.txt");
     ofstream fout("output.txt");
@@ -45,7 +48,7 @@ int main(){
         }
 
         else if(currentStep[0] == 'R'){
-            string* candidate = oldest.front();
+            string* candidate = Candidate (oldest);
             fout<< (*candidate)[1] <<"\t";
             oldest.pop();
             oldest.push(candidate);

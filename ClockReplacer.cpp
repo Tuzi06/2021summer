@@ -46,6 +46,10 @@ queue<int> removePinFromQueue(queue<int> q, int pin){
     return q;
 }
 
+frame unpin (frame buffer[]){
+    
+}
+
 frame Candiate(frame buffer[], int i)
 {
     return buffer[i];
@@ -54,6 +58,8 @@ frame Candiate(frame buffer[], int i)
 int sizeOfQueue (queue<int> q){
     return q.size();
 }
+
+
 int main(){
     ifstream fin("input.txt");
     ofstream fout("output.txt");
