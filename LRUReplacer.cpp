@@ -3,23 +3,53 @@
 #include <cstring>
 #include <queue>
 using namespace std;
+class frame{
+private:
+    int pinCount;
+public:
+    frame(){
+        pinCount = 0;
+    }
 
-queue<string*> removePinFromQueue(queue<string*> q ,string s){
+    void unpin(){
+        if (pinCount >0)
+            pinCount --;
+    }
+
+    void pin(){
+        pinCount ++;
+    }
+
+    int getPinCount(){
+        return pinCount;
+    }
+};
+
+queue<frame*> removePinFromQueue(queue<frame*> q ,frame* s){
     int n = q.size();
     for(int i=0; i<n; i++){
-        string* head = q.front();
+        frame* head = q.front();
         q.pop();
-        if((*head)[1] != s[1])
+        if(head != s)
             q.push(head);
     }
     return q;
 }
-
-int sizeOfQueue (queue<string*> q){
+queue<int> removePinFromShowQueue(queue<int> q ,int s){
+    int n = q.size();
+    for(int i=0; i<n; i++){
+        int head = q.front();
+        q.pop();
+        if(head != s)
+            q.push(head);
+    }
+    return q;
+}
+int sizeOfQueue (queue<frame*> q){
     return q.size();
 }
-string* Candidate(queue <string*> q){
-    string* candidate = q.front();
+frame* Candidate(queue <frame*> q){
+    frame* candidate = q.front();
     return candidate;
 }
 int main(){
@@ -27,29 +57,34 @@ int main(){
     ofstream fout("output.txt");
 
     int count;
-    queue<string*> oldest;
-
+    queue<frame*> oldest;
+    queue <int> show;
     fin>>count;
 
-    string buffer [count];
+    frame buffer [count];
 
     while (fin.eof() == false){
         string currentStep;
         fin>>currentStep;
         if(currentStep[0] == 'U'){
-            buffer[currentStep[1]-49] = currentStep;
+            buffer[currentStep[1]-49].unpin();
             oldest.push(& buffer[currentStep[1]-49]);
+            show.push (currentStep[1]-48);
             cout<<"after U length of queue="<<sizeOfQueue(oldest)<<endl;
         }
         else if(currentStep[0] == 'P'){
-            buffer[currentStep[1]-49] = currentStep;
-            oldest = removePinFromQueue (oldest, currentStep);
+            buffer[currentStep[1]-49].pin();
+            oldest = removePinFromQueue (oldest, &buffer[currentStep[1]-49]);
+            show = removePinFromShowQueue(show, currentStep[1]-48);
             cout<<"after P length of queue="<<sizeOfQueue(oldest)<<endl;
         }
 
         else if(currentStep[0] == 'R'){
-            string* candidate = Candidate (oldest);
-            fout<< (*candidate)[1] <<"\t";
+            frame* candidate = Candidate (oldest);
+            int candiateShow = show.front();
+            fout<< candiateShow <<"\t";
+            show.pop();
+            show.push(candiateShow);
             oldest.pop();
             oldest.push(candidate);
             cout<<"after R length of queue="<<sizeOfQueue(oldest)<<endl;

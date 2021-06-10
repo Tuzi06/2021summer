@@ -14,15 +14,18 @@ public:
         referenceBit = false;
         pinCount=0;
     }
-    void replace(){
-        referenceBit = true;
+    void reset(){
+        referenceBit = false;
     }
     void pin(){
+        referenceBit =true;
         pinCount++;
     }
     void unpin(){
         if(pinCount >0)
             pinCount--;
+        if(referenceBit == 0)
+            referenceBit =false;
     }
 
     int getPinCount(){
@@ -46,9 +49,6 @@ queue<int> removePinFromQueue(queue<int> q, int pin){
     return q;
 }
 
-frame unpin (frame buffer[]){
-    
-}
 
 frame Candiate(frame buffer[], int i)
 {
@@ -85,12 +85,18 @@ int main(){
         }
 
         else if(currentStep[0] == 'R'){
-            buffer[currentStep[1]-49].replace();
+            while ( buffer[oldest.front()-1].getRefernceBit()!= false){
+                buffer[oldest.front()-1].reset();
+                int old = oldest.front();
+                oldest.pop();
+                oldest.push(old);
+            }
             int refer = oldest.front();
             frame currentCandidate = Candiate(buffer,refer);
             fout<<refer<<"\t";
             oldest.pop();
             oldest.push(refer);
+
             cout<<"after R length of queue="<<sizeOfQueue(oldest)<<endl;
         }
     }
