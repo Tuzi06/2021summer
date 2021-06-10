@@ -18,14 +18,14 @@ public:
         referenceBit = false;
     }
     void pin(){
-        referenceBit =true;
+        //referenceBit =true;
         pinCount++;
     }
     void unpin(){
         if(pinCount >0)
             pinCount--;
         if(referenceBit == 0)
-            referenceBit =false;
+            referenceBit =true;
     }
 
     int getPinCount(){
@@ -85,7 +85,7 @@ int main(){
         }
 
         else if(currentStep[0] == 'R'){
-            while ( buffer[oldest.front()-1].getRefernceBit()!= false){
+            while (buffer[oldest.front()-1].getRefernceBit()!= false){
                 buffer[oldest.front()-1].reset();
                 int old = oldest.front();
                 oldest.pop();

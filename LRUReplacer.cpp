@@ -48,8 +48,8 @@ queue<int> removePinFromShowQueue(queue<int> q ,int s){
 int sizeOfQueue (queue<frame*> q){
     return q.size();
 }
-frame* Candidate(queue <frame*> q){
-    frame* candidate = q.front();
+frame Candidate(queue <frame*> q){
+    frame candidate = *q.front();
     return candidate;
 }
 int main(){
@@ -80,13 +80,13 @@ int main(){
         }
 
         else if(currentStep[0] == 'R'){
-            frame* candidate = Candidate (oldest);
+            frame candidate = Candidate (oldest);
             int candiateShow = show.front();
             fout<< candiateShow <<"\t";
             show.pop();
             show.push(candiateShow);
             oldest.pop();
-            oldest.push(candidate);
+            oldest.push(&candidate);
             cout<<"after R length of queue="<<sizeOfQueue(oldest)<<endl;
         }
     }
