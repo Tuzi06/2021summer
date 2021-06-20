@@ -45,44 +45,27 @@ generateTable = do
   writeTable table filename
 
 --reversing hashes
-findInRow  :: Passwd -> Hash ->  Int -> Hash -> Map.Map Hash Passwd -> Int -> Maybe Passwd
-findInRow orgPasswd hashVal widthTable matchedHash rTable counter
-    | counter == widthTable+1= findPassword newMapTable widthTable hashVal    --false positive: search again but on a new map excluding false positive rows
-    | pwHash orgPasswd==hashVal= Just orgPasswd       --Hash the given password and compare it with given hash value.
-    | otherwise= findInRow (pwReduce (pwHash orgPasswd)) hashVal widthTable matchedHash rTable (counter+1)    --hash and reduce, and compare again.
-    where newMapTable= Map.fromList (filter (\(a, b) -> a /= matchedHash) (Map.toList rTable))  --New Map without false positive row
+findInRow  :: Map.Map Hash Passwd -> Passwd -> Hash -> Hash -> Int -> Int -> Maybe Passwd
+findInRow table orgPasswd orgHash foundHash x  rowIndex
+  | pwHash orgPasswd == orgHash       = Just orgPasswd 
+  | rowIndex == x+1                   = findPassword newTable x orgHash          
+  | otherwise                         = findInRow table (pwReduce (pwHash orgPasswd)) orgHash foundHash x (rowIndex+1)    
+    where
+      newTable ::  Map.Map Hash Passwd
+      newTable= Map.fromList (filter (\(a, b) -> a /= foundHash) (Map.toList table))  
 
 
-searchInTable :: Map.Map Hash Passwd -> [Int] -> [Hash] -> Int-> Maybe Passwd
-searchInTable table [x,y] hash colIndex
-  | isNothing (Map.lookup (hash!!colIndex) table) && y == 0     = Nothing
-  | isJust (Map.lookup (hash!!colIndex) table)      = findInRow (Maybe.fromJust (Map.lookup (hash!!colIndex) table)) (head hash) x (hash !! colIndex) table rowIndex
-  | otherwise                                                   =  searchInTable table [x,y-1] (hash ++ newHash) (colIndex +1)
-  where   newHash= [pwHash (pwReduce p) | p <-hash, p == hash !! colIndex]
-          rowIndex = 0
-
-
-
-
+searchInTable :: Map.Map Hash Passwd -> [Int] -> Hash -> Hash -> Maybe Passwd
+searchInTable table [x,y] hash newHash 
+  | isNothing (Map.lookup newHash table) && y == 0     = Nothing
+  | isJust (Map.lookup newHash table)                  = findInRow table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x 0
+  | otherwise                                          = searchInTable table [x,y-1] hash reHash 
+  where 
+    reHash ::Hash
+    reHash= pwHash (pwReduce newHash)
 
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
-findPassword table x hash =
-                  let index =0
-                  in searchInTable table [x,x] [hash] index
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+findPassword table x hash = searchInTable table [x,x] hash hash
 
 --test and compile
 test2 :: Int -> IO ([Passwd], Int)
