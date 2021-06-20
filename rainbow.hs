@@ -46,26 +46,23 @@ generateTable = do
 
 --reversing hashes
 findInRow  :: Map.Map Hash Passwd -> Passwd -> Hash -> Hash -> Int -> Int -> Maybe Passwd
-findInRow table orgPasswd orgHash foundHash x  rowIndex
+findInRow table orgPasswd orgHash foundHash x rowIndex
   | pwHash orgPasswd == orgHash       = Just orgPasswd 
   | rowIndex == x+1                   = findPassword newTable x orgHash          
   | otherwise                         = findInRow table (pwReduce (pwHash orgPasswd)) orgHash foundHash x (rowIndex+1)    
-    where
-      newTable ::  Map.Map Hash Passwd
-      newTable= Map.fromList (filter (\(a, b) -> a /= foundHash) (Map.toList table))  
+    where newTable= Map.fromList (filter compareHash (Map.toList table)) 
+            where compareHash :: (Hash,Passwd) -> Bool
+                  compareHash (qHash,qpasswd) = qHash/= foundHash
 
-
-searchInTable :: Map.Map Hash Passwd -> [Int] -> Hash -> Hash -> Maybe Passwd
-searchInTable table [x,y] hash newHash 
+searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
+searchInTable table x y hash newHash 
   | isNothing (Map.lookup newHash table) && y == 0     = Nothing
   | isJust (Map.lookup newHash table)                  = findInRow table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x 0
-  | otherwise                                          = searchInTable table [x,y-1] hash reHash 
-  where 
-    reHash ::Hash
-    reHash= pwHash (pwReduce newHash)
+  | otherwise                                          = searchInTable table x (y-1) hash reHash 
+  where reHash= pwHash (pwReduce newHash)
 
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
-findPassword table x hash = searchInTable table [x,x] hash hash
+findPassword table x hash = searchInTable table x x hash hash
 
 --test and compile
 test2 :: Int -> IO ([Passwd], Int)
