@@ -5,10 +5,10 @@ import Data.Maybe as Maybe
 
 pwLength, nLetters, width, height :: Int
 filename :: FilePath
-pwLength = 8            -- length of each password
-nLetters = 5            -- number of letters to use in passwords: 5 -> a-e
-width = 40              -- length of each chain in the table
-height = 1000           -- number of "rows" in the table
+pwLength = 5
+nLetters = 18
+width = 60
+height = 800
 filename = "table.txt"  -- filename to store the table
 
 --hashing and reducing
@@ -23,16 +23,15 @@ getListInf:: Int ->[Int]
 getListInf intHash = modular intHash : getListInf (divide intHash)
 
 pwReduce :: Hash -> Passwd
-pwReduce hash = map toLetter (reverse(take 8 (getListInf (fromEnum hash))))
+pwReduce hash = map toLetter (reverse(take pwLength (getListInf (fromEnum hash))))
 
 --The Map Data Structure
 convert :: Int -> Passwd->Hash
 convert 0 password = pwHash password
 convert x password = pwHash(pwReduce(convert (x-1) password))
 
-
 makeList ::Int ->[Passwd]->[(Hash,Passwd)]
-makeList x = foldr (\ y -> (++) [(convert x y, y)]) []
+makeList x = foldr (\y -> (++) [(convert x y, y)]) []
 
 rainbowTable:: Int -> [Passwd] -> Map.Map Hash Passwd
 rainbowTable x [] = Map.empty
