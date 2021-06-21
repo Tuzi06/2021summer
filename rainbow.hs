@@ -5,10 +5,10 @@ import Data.Maybe as Maybe
 
 pwLength, nLetters, width, height :: Int
 filename :: FilePath
-pwLength = 5
-nLetters = 18
-width = 60
-height = 800
+pwLength = 8            -- length of each password
+nLetters = 5            -- number of letters to use in passwords: 5 -> a-e
+width = 40              -- length of each chain in the table
+height = 1000           -- number of "rows" in the table
 filename = "table.txt"  -- filename to store the table
 
 --hashing and reducing
@@ -44,21 +44,25 @@ generateTable = do
   writeTable table filename
 
 --reversing hashes
-findInRow  :: Map.Map Hash Passwd -> Passwd -> Hash -> Hash -> Int -> Int -> Maybe Passwd
-findInRow table orgPasswd orgHash foundHash x rowIndex
-  | pwHash orgPasswd == orgHash       = Just orgPasswd 
-  | rowIndex == x+1                   = findPassword newTable x orgHash          
-  | otherwise                         = findInRow table (pwReduce (pwHash orgPasswd)) orgHash foundHash x (rowIndex+1)    
-    where newTable= Map.fromList (filter compareHash (Map.toList table)) 
-            where compareHash :: (Hash,Passwd) -> Bool
-                  compareHash (qHash,qpasswd) = qHash/= foundHash
 
+--after find the passwd in the table, find the orginal password recursively,where x is the width
+getCorrespondingPassword :: Map.Map Hash Passwd -> Passwd -> Hash -> Hash -> Int -> Int -> Maybe Passwd
+--found colision, so redo the finding with new table that without the colision password
+getCorrespondingPassword table orgPasswd orgHash foundHash x (-1)  = findPassword newTable x orgHash
+  where newTable= Map.fromList (filter compareHash (Map.toList table)) 
+            where compareHash :: (Hash,Passwd) -> Bool
+                  compareHash (qHash,qpasswd) = qHash /= foundHash
+
+getCorrespondingPassword table orgPasswd orgHash foundHash x rowIndex
+  | pwHash orgPasswd == orgHash       = Just orgPasswd         
+  | otherwise                         = getCorrespondingPassword table (pwReduce(pwHash orgPasswd)) orgHash foundHash x (rowIndex-1)    
+
+--search the password in the table base on the input hash where x and y are  the width
 searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
-searchInTable table x y hash newHash 
-  | isNothing (Map.lookup newHash table) && y == 0     = Nothing
-  | isJust (Map.lookup newHash table)                  = findInRow table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x 0
-  | otherwise                                          = searchInTable table x (y-1) hash reHash 
-  where reHash= pwHash (pwReduce newHash)
+searchInTable table x (-1) hash newHash = Nothing 
+searchInTable table x y hash newHash
+  | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash (pwReduce newHash))
+  | otherwise                             = getCorrespondingPassword table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x x
 
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
 findPassword table x hash = searchInTable table x x hash hash

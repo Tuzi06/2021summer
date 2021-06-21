@@ -66,3 +66,4 @@ findPassword table x hash =
                 getCorrespondingPassword y x hash
                     |  pwHash y ==hash      = listToMaybe [y]
                     |  otherwise            =  getCorrespondingPassword (pwReduce(pwHash y)) (x-1) hash
+\
