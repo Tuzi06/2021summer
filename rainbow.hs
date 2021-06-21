@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 import RainbowAssign
 import qualified Data.Map as Map
 import Data.Maybe as Maybe
