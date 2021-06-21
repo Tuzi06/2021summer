@@ -61,7 +61,7 @@ getCorrespondingPassword table orgPasswd orgHash foundHash x rowIndex
 searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
 searchInTable table x (-1) hash newHash = Nothing 
 searchInTable table x y hash newHash
-  | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash (pwReduce newHash))
+  | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash(pwReduce newHash))
   | otherwise                             = getCorrespondingPassword table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x x
 
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
