@@ -46,23 +46,23 @@ generateTable = do
 --reversing hashes
 
 --after find the passwd in the table, find the orginal password recursively,where x is the width
-getCorrespondingPassword :: Map.Map Hash Passwd -> Passwd -> Hash -> Hash -> Int -> Int -> Maybe Passwd
+getCorrespondingPassword :: Map.Map Hash Passwd -> Int -> Int -> Passwd -> Hash -> Hash -> Maybe Passwd
 --found colision, so redo the finding with new table that without the colision password
-getCorrespondingPassword table orgPasswd orgHash foundHash x (-1)  = findPassword newTable x orgHash
+getCorrespondingPassword table x (-1) orgPasswd orgHash foundHash = findPassword newTable x orgHash
   where newTable= Map.fromList (filter compareHash (Map.toList table)) 
             where compareHash :: (Hash,Passwd) -> Bool
                   compareHash (qHash,qpasswd) = qHash /= foundHash
 
-getCorrespondingPassword table orgPasswd orgHash foundHash x rowIndex
+getCorrespondingPassword table x rowIndex orgPasswd orgHash foundHash 
   | pwHash orgPasswd == orgHash       = Just orgPasswd         
-  | otherwise                         = getCorrespondingPassword table (pwReduce(pwHash orgPasswd)) orgHash foundHash x (rowIndex-1)    
+  | otherwise                         = getCorrespondingPassword table x (rowIndex-1)(pwReduce(pwHash orgPasswd)) orgHash foundHash 
 
 --search the password in the table base on the input hash where x and y are  the width
 searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
 searchInTable table x (-1) hash newHash = Nothing 
 searchInTable table x y hash newHash
   | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash(pwReduce newHash))
-  | otherwise                             = getCorrespondingPassword table (Maybe.fromJust (Map.lookup newHash table)) hash newHash x x
+  | otherwise                             = getCorrespondingPassword table x x (Maybe.fromJust (Map.lookup newHash table)) hash newHash 
 
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
 findPassword table x hash = searchInTable table x x hash hash
