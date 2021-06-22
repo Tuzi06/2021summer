@@ -217,7 +217,26 @@ void BPTree::insertInternal(int x, Node *cursor, Node *child) {
 // Delete Operation
 void BPTree::deletes(int x) {
     //TODO: Fill this part out!
-    
+   Node *cursor = root;
+    while (cursor->IS_LEAF == false) {
+      for (int i = 0; i < cursor->size; i++) {
+        if (x < cursor->key[i]) {
+          cursor = cursor->ptr[i];
+          break;
+        }
+        if (i == cursor->size - 1) {
+          cursor = cursor->ptr[i + 1];
+          break;
+        }
+      }
+    }
+    for (int i = 0; i < cursor->size; i++) {
+      if (cursor->key[i] == x) {
+        cursor->key[i] = 0;
+        cursor->ptr[i] = NULL;
+        return;
+      }
+    }
     
 }
 
@@ -272,6 +291,7 @@ int main() {
   node.insert(30);
   node.insert(20);
   node.display(node.getRoot());
-
+  node.deletes(15);
+  node.display(node.getRoot());
   node.search(15);
 }
