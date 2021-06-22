@@ -42,6 +42,11 @@ generateTable = do
   table <- buildTable rainbowTable nLetters pwLength width height
   writeTable table filename
 
+--test1
+test1 = do
+  table <- readTable filename
+  return (Map.lookup (-1942330076) table)
+
 --reversing hashes
 
 --after find the passwd in the table, find the orginal password recursively,where x is the width
@@ -66,7 +71,7 @@ searchInTable table x y hash newHash
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
 findPassword table x hash = searchInTable table x x hash hash
 
---test and compile
+--test2 and compile
 test2 :: Int -> IO ([Passwd], Int)
 test2 n = do
   table <- readTable filename
