@@ -270,5 +270,6 @@ int main() {
   node.insert(30);
   node.insert(20);
   node.display(node.getRoot());
+
   node.search(15);
 }
