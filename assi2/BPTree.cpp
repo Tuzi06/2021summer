@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <iostream>
 #include <sstream>
 using namespace std;
-int MAX = 3;
+int MAX = 10;
 
 // BP node
 class Node {
