@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <iostream>
 #include <sstream>
 using namespace std;
-int MAX = 3;
+int MAX = 10;
 
 // BP node
 class Node {
@@ -233,21 +233,16 @@ void BPTree::deletes(int x) {
       }
     }
   }
-
   for (int i = 0; i < cursor->size; i++) {
-    // we have more element than the minimum occupancy requirement, so can just delete
-    if (cursor->key[i] == x && cursor->size> MAX/2) {
-      cursor->key[i]=0;
+    if (cursor->key[i] == x) {
       for(int j= i; j<cursor->size -1;j++){
-        cursor->key[j]= cursor->key[j+1];
+        cursor->ptr[i]= cursor->ptr[i+1];
+        cursor->ptr[i+1]= NULL;
       }
-      cursor->size -= 1;
+      cursor->size -=1;
+      cout<<cursor->ptr<<endl;
+      return;
     }
-    // we get the condition where we need either redistribution or merge
-    if(cursor->key[i] == x && cursor->size==MAX/2){
-      //the sibling has enough element that can redistribution, we check left and then right
-    }
-
   }
     
 }
@@ -303,8 +298,7 @@ int main() {
   node.insert(30);
   node.insert(20);
   node.display(node.getRoot());
-  cout<<"\t"<<endl;
-  node.deletes(25);
+  node.deletes(20);
   node.display(node.getRoot());
   node.search(20);
 }
