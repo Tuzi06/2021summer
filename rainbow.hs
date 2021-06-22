@@ -57,9 +57,9 @@ getCorrespondingPassword table x (-1) orgPasswd orgHash foundHash = findPassword
             where compareHash :: (Hash,Passwd) -> Bool
                   compareHash (qHash,qpasswd) = qHash /= foundHash
 
-getCorrespondingPassword table x rowIndex orgPasswd orgHash foundHash 
-  | pwHash orgPasswd == orgHash       = Just orgPasswd         
-  | otherwise                         = getCorrespondingPassword table x (rowIndex-1)(pwReduce(pwHash orgPasswd)) orgHash foundHash 
+getCorrespondingPassword table x rowIndex wPasswd orgHash foundHash 
+  | pwHash wPasswd == orgHash       = Just wPasswd         
+  | otherwise                         = getCorrespondingPassword table x (rowIndex-1)(pwReduce(pwHash wPasswd)) orgHash foundHash 
 
 --search the password in the table base on the input hash where x and y are  the width
 searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
