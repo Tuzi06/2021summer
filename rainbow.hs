@@ -61,15 +61,13 @@ getCorrespondingPassword table x rowIndex wPasswd orgHash foundHash
   | pwHash wPasswd == orgHash       = Just wPasswd         
   | otherwise                         = getCorrespondingPassword table x (rowIndex-1)(pwReduce(pwHash wPasswd)) orgHash foundHash 
 
---search the password in the table base on the input hash where x and y are  the width
-searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
-searchInTable table x (-1) hash newHash = Nothing 
-searchInTable table x y hash newHash
-  | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash(pwReduce newHash))
-  | otherwise                             = getCorrespondingPassword table x x (Maybe.fromJust (Map.lookup newHash table)) hash newHash 
-
 findPassword :: Map.Map Hash Passwd -> Int -> Hash -> Maybe Passwd
 findPassword table x hash = searchInTable table x x hash hash
+                            where searchInTable :: Map.Map Hash Passwd -> Int -> Int -> Hash -> Hash -> Maybe Passwd
+                                  searchInTable table x (-1) hash newHash = Nothing 
+                                  searchInTable table x y hash newHash
+                                    | isNothing(Map.lookup newHash table)   = searchInTable table x (y-1) hash (pwHash(pwReduce newHash))
+                                    | otherwise                             = getCorrespondingPassword table x x (Maybe.fromJust (Map.lookup newHash table)) hash newHash     
 
 --test2 and compile
 test2 :: Int -> IO ([Passwd], Int)
