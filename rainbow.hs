@@ -48,15 +48,11 @@ test1 = do
   return (Map.lookup (-1942330076) table)
 
 --reversing hashes
-
---after find the passwd in the table, find the orginal password recursively,where x is the width
 getCorrespondingPassword :: Map.Map Hash Passwd -> Int -> Int -> Passwd -> Hash -> Hash -> Maybe Passwd
---found colision, so redo the finding with new table that without the colision password
 getCorrespondingPassword table x (-1) orgPasswd orgHash foundHash = findPassword newTable x orgHash
   where newTable= Map.fromList (filter compareHash (Map.toList table)) 
             where compareHash :: (Hash,Passwd) -> Bool
                   compareHash (qHash,qpasswd) = qHash /= foundHash
-
 getCorrespondingPassword table x rowIndex wPasswd orgHash foundHash 
   | pwHash wPasswd == orgHash       = Just wPasswd         
   | otherwise                         = getCorrespondingPassword table x (rowIndex-1)(pwReduce(pwHash wPasswd)) orgHash foundHash 
