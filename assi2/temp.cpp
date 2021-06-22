@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <iostream>
 #include <sstream>
 using namespace std;
-int MAX = 10;
+int MAX = 3;
 
 // BP node
 class Node {
@@ -217,34 +217,6 @@ void BPTree::insertInternal(int x, Node *cursor, Node *child) {
 // Delete Operation
 void BPTree::deletes(int x) {
     //TODO: Fill this part out!
-  if(root == NULL) return;
-  Node *cursor = root;
-  Node *parent;
-  while (cursor->IS_LEAF == false) {
-    parent = cursor;
-    for (int i = 0; i < cursor->size; i++) {
-      if (x < cursor->key[i]) {
-        cursor = cursor->ptr[i];
-        break;
-      }
-      if (i == cursor->size - 1) {
-        cursor = cursor->ptr[i + 1];
-        break;
-      }
-    }
-  }
-  for (int i = 0; i < cursor->size; i++) {
-    if (cursor->key[i] == x) {
-      for(int j= i; j<cursor->size -1;j++){
-        cursor->ptr[i]= cursor->ptr[i+1];
-        cursor->ptr[i+1]= NULL;
-      }
-      cursor->size -=1;
-      cout<<cursor->ptr<<endl;
-      return;
-    }
-  }
-    
 }
 
 // Find the parent
@@ -297,8 +269,6 @@ int main() {
   node.insert(40);
   node.insert(30);
   node.insert(20);
-  node.display(node.getRoot());
-  node.deletes(20);
   node.display(node.getRoot());
   node.search(20);
 }

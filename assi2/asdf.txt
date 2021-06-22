@@ -1,0 +1,17 @@
+for(int j= i; j<cursor->size -1;j++){
+        cursor->key[j]= cursor->key[j+1];
+      }
+      cursor->size -= 1;
+      for(int j =0;j<parent->size;j++){
+        if(parent->ptr[j]== cursor){
+          //we now check the left sibiling
+          if(j>0 && j<parent->size){//avoid the condition that the leaf page has no left sibling or right sibiling
+            //we can check left sibiling
+            if(parent->ptr[j-1]->size> MAX/2){
+              int swap = parent->ptr[j-1]->key[parent->ptr[j-1]->size];
+              parent->ptr[j-1]->size -=1;
+              cursor->size ++;
+              for(int l= 0; l<cursor->size -1;l++){
+                cursor->key[l+1]= cursor->key[l];
+              cursor->key[0] = swap;
+              parent->key[j]=swap;

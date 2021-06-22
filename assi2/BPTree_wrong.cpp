@@ -214,16 +214,17 @@ void BPTree::insertInternal(int x, Node *cursor, Node *child) {
   }
 }
 
+
 // Delete Operation
 void BPTree::deletes(int x) {
-    //TODO: Fill this part out!
+  //TODO: Fill this part out!
   if(root == NULL) return;
   Node *cursor = root;
   Node *parent;
   while (cursor->IS_LEAF == false) {
     parent = cursor;
     for (int i = 0; i < cursor->size; i++) {
-      if (x < cursor->key[i]) {
+     if (x < cursor->key[i]) {
         cursor = cursor->ptr[i];
         break;
       }
@@ -237,21 +238,33 @@ void BPTree::deletes(int x) {
   for (int i = 0; i < cursor->size; i++) {
     // we have more element than the minimum occupancy requirement, so can just delete
     if (cursor->key[i] == x && cursor->size> MAX/2) {
-      cursor->key[i]=0;
       for(int j= i; j<cursor->size -1;j++){
         cursor->key[j]= cursor->key[j+1];
       }
       cursor->size -= 1;
     }
     // we get the condition where we need either redistribution or merge
-    if(cursor->key[i] == x && cursor->size==MAX/2){
-      //the sibling has enough element that can redistribution, we check left and then right
+    else if(cursor->key[i] == x && cursor->size<=MAX/2){
+      Node* sibL=NULL;
+      Node* sibR=NULL;
+      //we find siblings for redistribution
+      for(int j=0; j< parent->size; j++){
+        if(parent->ptr[j]== cursor)
+          sibL = parent->ptr[j-1];
+          sibR = parent->ptr[j-1];
+          break;
+        }
+      
+      //redistribution with left sibling
+      if(sibL->size>=MAX/2){
+  
+      }
+        
+      else if(sibR->size>=MAX/2){}
+      
     }
-
   }
-    
 }
-
 // Find the parent
 Node *BPTree::findParent(Node *cursor, Node *child) {
   Node *parent;
