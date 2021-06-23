@@ -245,23 +245,71 @@ void BPTree::deletes(int x) {
     }
     // we get the condition where we need either redistribution or merge
     else if(cursor->key[i] == x && cursor->size<=MAX/2){
+      cout<<"merge or redist"<<endl;
       Node* sibL=NULL;
       Node* sibR=NULL;
       //we find siblings for redistribution
-      for(int j=0; j< parent->size; j++){
+      int j=0;// j is the index in the parent for the current child page we have
+      for(; j< parent->size; j++){
         if(parent->ptr[j]== cursor)
           sibL = parent->ptr[j-1];
           sibR = parent->ptr[j-1];
           break;
         }
-      
       //redistribution with left sibling
-      if(sibL->size>=MAX/2){
-  
+      if(sibL->size>MAX/2){
+        int swap = sibL->key[sibL->size];
+              sibL->size -=1;
+              cursor->size ++;
+              for(int l= 0; l<cursor->size -1;l++)
+                cursor->key[l+1]= cursor->key[l];
+              cursor->key[0] = swap;
+              parent->key[j]=swap;
       }
-        
-      else if(sibR->size>=MAX/2){}
-      
+      else if(sibR->size>MAX/2){
+        int swap =sibR->key[0];
+        for(int l =0; l<sibR->size -1; l++)
+          sibR->key[l]=sibR->key[l+1];
+        sibR->size --;
+        cursor->size++;
+        cursor->key[cursor->size] =swap;
+        parent->key[j+1]= sibR->key[0];
+      }
+      //we have to do merge now
+      else {
+        do{
+          if(sibL!= NULL)
+            while(cursor->size >0){
+              sibL->size++;
+              sibL->key[sibL->size]=cursor->key[0];
+              sibL->ptr[sibL->size]=cursor->ptr[0];
+              for(int l=0; l<cursor->size;l++){
+                cursor->key[l]=cursor->key[l+1];
+                cursor->ptr[l]=cursor->ptr[l+1];
+              }
+              cursor->size--;
+            }
+          else if(sibR!=NULL)
+            while(cursor->size >0){
+              sibR->size++;
+              for(int l=0;l<sibR->size-1;l++){
+                sibR->key[l+1]= sibR->key[l];
+                sibR->ptr[l+1]= sibR->ptr[l];
+              }
+              sibR->key[0]=cursor->key[cursor->size];
+              sibR->ptr[0]=cursor->ptr[cursor->size];
+              cursor->size--;
+              parent->key[j+1] = sibR->key[0];
+            }
+          delete parent->ptr[j];
+          for(int l=j;l<parent->size;l++){
+            parent->key[l] =parent->key[l+1];
+            parent->ptr[l] = parent->ptr[l+1];
+          }
+          parent->size--;
+          cursor = findParent(root, cursor);
+        }while(cursor!= root && cursor->size <MAX/2);
+      }
     }
   }
 }

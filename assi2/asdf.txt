@@ -15,3 +15,20 @@ for(int j= i; j<cursor->size -1;j++){
                 cursor->key[l+1]= cursor->key[l];
               cursor->key[0] = swap;
               parent->key[j]=swap;
+
+
+
+
+              while(sibL->size<MAX){
+            sibL->size++;
+            sibL->key[sibL->size] = cursor->key[0];
+            for(int l =0; l<sibR->size -1; l++)
+              sibR->key[l]=sibR->key[l+1];
+            sibR->size --;
+          }
+          while(cursor->size>0){
+            sibR->size++;
+            for(int l =0; l<sibR->size -1; l++)
+              sibR->key[l+1]=sibR->key[l];
+            
+          }
