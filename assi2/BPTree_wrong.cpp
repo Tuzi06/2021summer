@@ -218,6 +218,12 @@ void BPTree::insertInternal(int x, Node *cursor, Node *child) {
 // Delete Operation
 void BPTree::deletes(int x) {
   //TODO: Fill this part out!
+  int max;
+  if(MAX%2!=0)
+    max= MAX+1;
+  else 
+    max = MAX;
+
   if(root == NULL) return;
   Node *cursor = root;
   Node *parent;
@@ -237,78 +243,114 @@ void BPTree::deletes(int x) {
 
   for (int i = 0; i < cursor->size; i++) {
     // we have more element than the minimum occupancy requirement, so can just delete
-    if (cursor->key[i] == x && cursor->size> MAX/2) {
+    if (cursor->key[i] == x && cursor->size> max/2) {
       for(int j= i; j<cursor->size -1;j++){
         cursor->key[j]= cursor->key[j+1];
       }
       cursor->size -= 1;
     }
     // we get the condition where we need either redistribution or merge
-    else if(cursor->key[i] == x && cursor->size<=MAX/2){
+    else if(cursor->key[i] == x && cursor->size<=max/2){
       cout<<"merge or redist"<<endl;
       Node* sibL=NULL;
       Node* sibR=NULL;
       //we find siblings for redistribution
       int j=0;// j is the index in the parent for the current child page we have
-      for(; j< parent->size; j++){
-        if(parent->ptr[j]== cursor)
-          sibL = parent->ptr[j-1];
-          sibR = parent->ptr[j-1];
+      for(; j <=parent->size; j++){
+        if(parent->ptr[j] == cursor){
+          if(j>0)
+            sibL = parent->ptr[j-1];
+          if(j<parent->size)
+            sibR = parent->ptr[j+1];
           break;
         }
-      //redistribution with left sibling
-      if(sibL->size>MAX/2){
-        int swap = sibL->key[sibL->size];
-              sibL->size -=1;
-              cursor->size ++;
-              for(int l= 0; l<cursor->size -1;l++)
-                cursor->key[l+1]= cursor->key[l];
-              cursor->key[0] = swap;
-              parent->key[j]=swap;
       }
-      else if(sibR->size>MAX/2){
+      //if we have only one element in the page, then just delete the page
+      if(cursor->size ==1){
+        delete parent->ptr[j];
+        for(int l=j;l<parent->size;l++){
+          parent->key[l]=parent->key[l+1];
+          parent->ptr[l+1]=parent->ptr[l+2];
+        }
+        parent->ptr[parent->size]=NULL;
+        parent->size--;
+      }
+      //redistribution with left sibling
+      else if(sibL!=NULL && sibL->size>max/2){
+        cout<<"redistribution left"<<endl;
+        int swap = sibL->key[sibL->size-1];
+        sibL->size -=1;
+        cursor->size ++;
+        for(int l= cursor->size -1; l>0;l--)
+          cursor->key[l]= cursor->key[l-1];
+        cursor->key[0] = swap;
+        parent->key[j-1]=swap;
+      }
+      //redistribution with right sibling
+      else if(sibR!=NULL && sibR->size>max/2){
+        cout<<"redistribution right"<<endl;
         int swap =sibR->key[0];
         for(int l =0; l<sibR->size -1; l++)
           sibR->key[l]=sibR->key[l+1];
         sibR->size --;
         cursor->size++;
-        cursor->key[cursor->size] =swap;
-        parent->key[j+1]= sibR->key[0];
+        cursor->key[cursor->size-1] =swap;
+        parent->key[j]= sibR->key[0];
       }
       //we have to do merge now
       else {
+        cout<<"merge"<<endl;
+        for(int l= i; l<cursor->size -1;l++){
+        cursor->key[l]= cursor->key[l+1];
+      }
+      cursor->size -= 1;
         do{
-          if(sibL!= NULL)
-            while(cursor->size >0){
+          if(sibL!= NULL){
+            cout<<"merge with left"<<endl;
+            while(cursor->size>0){
               sibL->size++;
-              sibL->key[sibL->size]=cursor->key[0];
-              sibL->ptr[sibL->size]=cursor->ptr[0];
-              for(int l=0; l<cursor->size;l++){
+              sibL->key[sibL->size-1]=cursor->key[0];
+              if(!cursor->IS_LEAF)
+                //sibL->ptr[sibL->size]=cursor->ptr[0];
+              for(int l=0; l<cursor->size-1;l++){
                 cursor->key[l]=cursor->key[l+1];
-                cursor->ptr[l]=cursor->ptr[l+1];
+                if(!cursor->IS_LEAF)
+                  cout<<"NOthing"<<endl;
+                  //cursor->ptr[l]=cursor->ptr[l+1];
               }
               cursor->size--;
             }
-          else if(sibR!=NULL)
+          }
+          else if(sibR!=NULL){
+            cout<<"merge with right"<<endl;
             while(cursor->size >0){
               sibR->size++;
-              for(int l=0;l<sibR->size-1;l++){
-                sibR->key[l+1]= sibR->key[l];
-                sibR->ptr[l+1]= sibR->ptr[l];
+              for(int l=sibR->size;l>0;l--){
+                sibR->key[l]= sibR->key[l-1];
+                if(!cursor->IS_LEAF)
+                  cout<<"NOthing"<<endl;
+                  //sibR->ptr[l+1]= sibR->ptr[l];
               }
               sibR->key[0]=cursor->key[cursor->size];
-              sibR->ptr[0]=cursor->ptr[cursor->size];
+              if(!cursor->IS_LEAF)
+                cout<<"NOthing"<<endl;
+                //sibR->ptr[0]=cursor->ptr[cursor->size];
               cursor->size--;
-              parent->key[j+1] = sibR->key[0];
+              parent->key[j] = sibR->key[0];
             }
-          delete parent->ptr[j];
+          }
+          //delete parent->ptr[j];
           for(int l=j;l<parent->size;l++){
-            parent->key[l] =parent->key[l+1];
+            parent->key[l-1] =parent->key[l];
             parent->ptr[l] = parent->ptr[l+1];
           }
+          
           parent->size--;
-          cursor = findParent(root, cursor);
-        }while(cursor!= root && cursor->size <MAX/2);
+          if(findParent(root, cursor)==NULL)
+            cursor = parent;
+          else
+            cursor = findParent(root, cursor);
+        }while(cursor!= root && cursor->size <max/2);
       }
     }
   }
@@ -363,9 +405,11 @@ int main() {
   node.insert(40);
   node.insert(30);
   node.insert(20);
-  node.display(node.getRoot());
-  cout<<"\t"<<endl;
-  node.deletes(25);
-  node.display(node.getRoot());
+  node.display(node.getRoot());cout<<"\n";
+  node.deletes(30);node.display(node.getRoot());cout<<"\n";
+  node.deletes(5);node.display(node.getRoot());cout<<"\n";
+  node.deletes(20);node.display(node.getRoot());cout<<"\n";
+  //node.deletes(30);node.display(node.getRoot());cout<<"\n";
+  //node.deletes(30);node.display(node.getRoot());cout<<"\n";
   node.search(20);
 }
