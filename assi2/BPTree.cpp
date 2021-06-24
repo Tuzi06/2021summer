@@ -246,6 +246,7 @@ void BPTree::deletes(int x) {
 
     if(root == NULL) 
         return;
+	cout<<"start delete"<<endl;
     Node *cursor = root;
     Node *parent;
     while (cursor->IS_LEAF == false) {
@@ -264,18 +265,19 @@ void BPTree::deletes(int x) {
 
     for (int i = 0; i < cursor->size; i++) {
         // we have more element than the minimum occupancy requirement, so can just delete
-        if (cursor->key[i] == x && cursor->size> max/2) {
+        if ((cursor->key[i] == x && cursor->size> max/2) || cursor == root) {
             if(i==0)
                 for(int j=0; j <=parent->size; j++)
                     if(parent->ptr[j] == cursor)
                         parent->key[j-1]= cursor->key[1];
-                for(int j= i; j<cursor->size -1;j++)
-                    cursor->key[j]= cursor->key[j+1];
+            for(int j= i; j<cursor->size -1;j++)
+                cursor->key[j]= cursor->key[j+1];
             cursor->size -= 1;
+			display(root);cout<<"\n"<<endl;
+            deletes(x);
         }
         // we get the condition where we need either redistribution or merge
         else if(cursor->key[i] == x && cursor->size<=max/2){
-            cout<<"merge or redist"<<endl;
             Node* sibL=NULL;
             Node* sibR=NULL;
             //we find siblings for redistribution
@@ -301,7 +303,9 @@ void BPTree::deletes(int x) {
             }
             //redistribution with left sibling
             else if(sibL!=NULL && sibL->size>max/2){
-                cout<<"redistribution left"<<endl;
+				for(int l= i; l<cursor->size -1;l++)
+                	cursor->key[l]= cursor->key[l+1];
+            	cursor->size -= 1;
                 int swap = sibL->key[sibL->size-1];
                 sibL->size -=1;
                 cursor->size ++;
@@ -312,7 +316,9 @@ void BPTree::deletes(int x) {
             }
             //redistribution with right sibling
             else if(sibR!=NULL && sibR->size>max/2){
-                cout<<"redistribution right"<<endl;
+				for(int l= i; l<cursor->size -1;l++)
+                	cursor->key[l]= cursor->key[l+1];
+            	cursor->size -= 1;
                 int swap =sibR->key[0];
                 for(int l =0; l<sibR->size -1; l++)
                     sibR->key[l]=sibR->key[l+1];
@@ -323,14 +329,12 @@ void BPTree::deletes(int x) {
             }
             //we have to do merge now
             else {
-                cout<<"merge"<<endl;
                 for(int l= i; l<cursor->size -1;l++){
                     cursor->key[l]= cursor->key[l+1];
                 }
                 cursor->size -= 1;
                 do{
                     if(sibL!= NULL){
-                        cout<<"merge with left"<<endl;
                         while(cursor->size>0){
                             sibL->size++;
                             sibL->key[sibL->size-1]=cursor->key[0];
@@ -346,7 +350,6 @@ void BPTree::deletes(int x) {
                         }
                     }
                     else if(sibR!=NULL){
-                        cout<<"merge with right"<<endl;
                         while(cursor->size >0){
                             sibR->size++;
                             for(int l=sibR->size;l>0;l--){
@@ -376,6 +379,13 @@ void BPTree::deletes(int x) {
                         cursor = findParent(root, cursor);
                 }while(cursor!= root && cursor->size <max/2);
             }
+			
+			if(parent == root && root->size ==0){
+				cout<<"root is empty"<<endl;
+				root = root->ptr[0];
+			}
+            display(root);cout<<"\n"<<endl;
+            deletes(x);
         }
     }
 }
@@ -427,6 +437,22 @@ Node *BPTree::getRoot() {
 int main() {
   BPTree node;
   node.insert(5);
+  node.insert(5);
+  node.insert(5);
+  node.insert(5);
+  node.insert(5);
+  node.insert(5);
+  node.insert(5);
+  node.display(node.getRoot());cout<<"insert complete"<<endl;cout<<"\n";
+
+  //node.insert(40);node.display(node.getRoot());cout<<"\n";
+  //node.insert(30);node.display(node.getRoot());cout<<"\n";
+  //node.insert(20);node.display(node.getRoot());cout<<"\n";
+  //node.display(node.getRoot());cout<<"insert complete"<<endl;cout<<"\n";
+  //node.deletes(35);node.display(node.getRoot());cout<<"\n";
+  node.deletes(5);node.display(node.getRoot());cout<<"\n";
+
+  /*node.insert(5);
   node.insert(15);
   node.insert(25);
   node.insert(35);
@@ -435,6 +461,9 @@ int main() {
   node.insert(40);
   node.insert(30);
   node.insert(20);
+  node.display(node.getRoot());
+
+  node.deletes(25);*/
   node.display(node.getRoot());
 
   node.search(15);
