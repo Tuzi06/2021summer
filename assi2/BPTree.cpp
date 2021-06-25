@@ -263,13 +263,11 @@ void BPTree::deletes(int x) {
 
     for (int i = 0; i < cursor->size; i++) {
         // we have more element than the minimum occupancy requirement, so can just delete
-        if ((cursor->key[i] == x && cursor->size> MAX/2) || cursor == root) {
-			cout<<"direct delete "<<x<<endl;
+        if ((cursor->key[i] == x && cursor->size> MAX/2) || (cursor->key[i] == x && cursor == root)) {
             for(int j= i; j<cursor->size -1;j++)
                 cursor->key[j]= cursor->key[j+1];
             cursor->size -= 1;
             deletes(x);
-			display(getRoot());cout<<"\n"<<endl;
         }
         // we get the condition where we need either redistribution or merge
         else if(cursor->key[i] == x && cursor->size<=MAX/2){
@@ -289,7 +287,6 @@ void BPTree::deletes(int x) {
             //if we have only one element in the page, then just delete the page
             //redistribution with left sibling
             if(sibL!=NULL && sibL->size>MAX/2){
-				cout<<"left redistribution "<<x<<endl;
 				for(int l= i; l<cursor->size -1;l++)
                 	cursor->key[l]= cursor->key[l+1];
             	cursor->size -= 1;
@@ -303,7 +300,6 @@ void BPTree::deletes(int x) {
             }
             //redistribution with right sibling
             else if(sibR!=NULL && sibR->size>MAX/2){
-				cout<<"right redistribution "<<x<<endl;
 				for(int l= i; l<cursor->size -1;l++)
                 	cursor->key[l]= cursor->key[l+1];
             	cursor->size -= 1;
@@ -313,18 +309,15 @@ void BPTree::deletes(int x) {
                 sibR->size --;
                 cursor->size++;
                 cursor->key[cursor->size-1] =swap;
-				cout<<"parent key j is "<< parent->key[j]<<"\t"<<"key 0 is "<<sibR->key[0]<<endl;
                 parent->key[j]= sibR->key[0];
 				parent->key[j-1]= cursor->key[0];
             }
             //we have to do merge now
             else {
-				cout<<"merge "<<x<<endl;
                 for(int l= i; l<cursor->size -1;l++){
                     cursor->key[l]= cursor->key[l+1];
                 }
                 cursor->size -= 1;
-				cout<<"cccc "<<cursor->size<<endl;
                 do{
 					//we need find sibling when we merge in non leaf level, so we need find siblings every time.
 					int k=0;
@@ -349,11 +342,17 @@ void BPTree::deletes(int x) {
                             cursor->size--;
                         }
 						for(int l=k; l<=parent->size;l++){
-							cout<<"asdfasdf "<<parent->key[l]<<endl;
-							parent->key[l-2]=parent->key[l-1];
+							parent->key[l-1]=parent->key[l];
 							parent->ptr[l]=parent->ptr[l+1];
 						}
-						//parent->size--;
+						cursor=parent->ptr[k];
+						parent->ptr[parent->size]=NULL;
+						while(root->ptr[1]==NULL){
+							root =root->ptr[0];
+							if(root->IS_LEAF)
+								break;
+						}
+						parent->size--;
                     }
                     else if(sibR!=NULL){
                         while(cursor->size >0){
@@ -365,33 +364,31 @@ void BPTree::deletes(int x) {
                             sibR->key[0]=cursor->key[cursor->size];
                             sibR->ptr[0]=cursor->ptr[cursor->size];
                             cursor->size--;
-                            parent->key[j] = sibR->key[0];
+                            parent->key[k] = sibR->key[0];
                         }
 						for(int l=k; l<parent->size;l++){
 							parent->key[l]=parent->key[l+1];
-							//parent->ptr[l]=parent->ptr[l+1];
+							parent->ptr[l]=parent->ptr[l+1];
+						}
+						cursor=parent->ptr[k];
+						parent->ptr[parent->size]=NULL;
+						while(root->ptr[1]==NULL){
+							root =root->ptr[0];
+							if(root->IS_LEAF)
+								break;
 						}
 						parent->size--;
                     }
-                    //delete parent->ptr[j];
-					if(parent->size >1){
-                    	for(int l=k;l<parent->size;l++){
-                       		parent->key[l-1] =parent->key[l];
-							//parent->ptr[l] = parent->ptr[l+1];
-                    	}
-                    parent->size--;
+					if(cursor!=root){
+                    	if(findParent(root, cursor)==NULL)
+                        	cursor = parent;
+                   	 	else
+                        	cursor = findParent(root, cursor);
+						parent=findParent(root,parent);
 					}
-                    if(findParent(root, cursor)==NULL)
-                        cursor = parent;
-                    else
-                        cursor = findParent(root, cursor);
-					parent=findParent(root,parent);
-                }while(cursor!= root && cursor->size <MAX/2);
-				//while(root->ptr[1]==nullptr)
-				//	root= root->ptr[0];
+                }while((cursor!= root) && cursor->size <MAX/2);
             }
             deletes(x);
-			display(getRoot());cout<<"\n"<<endl;
         }
     }
 }
@@ -452,15 +449,7 @@ int main() {
   node.insert(40);
   node.insert(30);
   node.insert(20);
-  node.display(node.getRoot());cout<<"\n"<<endl;
-
-  node.deletes(25);
-  node.deletes(30);
-  node.deletes(20);
-  node.deletes(15);
-  node.deletes(35);
-  node.deletes(40);
   node.display(node.getRoot());
-
+  
   node.search(15);
 }
