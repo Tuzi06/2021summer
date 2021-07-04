@@ -92,4 +92,15 @@ end
 
 
 
-println(isPrimeDay(Date("2021-07-24")))
+function main()
+    println("30's divisors are\n",divisors(30))
+    println("\nprimes under 7:\n", primes(7))
+    println("\npythagorean triples of 10\n", pythagorean(10))
+    println("\njoin ',' with ['one','two','three']\n", join(",",["one","two","three"]))
+    println("\nmerge [2,4,6,8] [1,3,5,7]\n", merge([2,4,6,8],[1,3,5,7]))
+    println("\nmergeSort [6,2,4,8,9,5,3,1,7,10]\n",  mergeSort([6,2,4,8,9,5,3,1,7,10]))
+    println("\n2018-5-17 is friday?\n", isFriday(Date("2018-5-17")))
+    println("\n2018-5-13 is primeday?\n",isPrimeDay(Date("2018-5-13")))
+end
+
+main()
