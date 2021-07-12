@@ -16,7 +16,7 @@ rationalSum n = getRatio 1 (n-1)
                 where
                     getRatio :: Int -> Int -> [Ratio Int]
                     getRatio x 1 = [x % 1]
-                    getRatio x y = [x % y] ++ getRatio (x+1) (y-1)
+                    getRatio x y = (x % y) : getRatio (x+1) (y-1)
 
 --Lowest Terms Only
 rationalSumLowest :: Int -> [Ratio Int]
@@ -25,7 +25,7 @@ rationalSumLowest n = getRatio 1 (n-1)
                     getRatio :: Int -> Int -> [Ratio Int]
                     getRatio x 1 = [x % 1]
                     getRatio x y
-                        |   gcd x y == 1    =[x % y] ++ getRatio (x+1) (y-1)
+                        |   gcd x y == 1    =(x % y) : getRatio (x+1) (y-1)
                         |   otherwise       = getRatio (x+1) (y-1)
 
 -- All Rational Numbers
