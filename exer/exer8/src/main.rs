@@ -16,15 +16,12 @@ fn main() {
     println!("{:?}", find::find_elt(&v2, 'o')); // Some(4)
     println!("{:?}", find::find_elt(&v2, 'q')); // None
 
-
-    println!("{}",rational::gcd(54,24));
-
-    /*let mut r = Rational::new(6, 8);
+    let mut r = rational ::Rational::new(6, 8);
     println!("{:?}", r); // prints Rational { n: 6, d: 8 }
     r.reduce();
     println!("{:?}", r); // prints Rational { n: 3, d: 4 }
-    let n = Rational::from(4_i64);
+    let n = rational::Rational::from(4_i64);
     println!("{:?}", n); // prints Rational { n: 4, d: 1 }
-    println!("{}", n == Rational::new(4,1)); // prints true*/
+    println!("{}", n == rational::Rational::new(4,1)); // prints true
 
 }

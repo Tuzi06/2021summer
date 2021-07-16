@@ -15,24 +15,26 @@ fn gcd(a: i64, b: i64) -> i64 {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Rational {
     // TODO
-    num: i64,
-    den: i64,
+    n: i64,
+    d: i64,
 }
 
 impl Rational {
     pub fn new(n: i64, d: i64) -> Rational {
         // TODO
-        Rational { num: n, den: d}
+        Rational { n: n, d: d}
     }
     // TODO: the reduce method
     pub fn reduce(&mut self){
-        let divisor = gcd(num,den);
-        self.num = self.num / divsor;
-        self.den = self.den / divsor;
+        let divisor = gcd(self.n,self.d);
+        self.n = self.n / divisor;
+        self.d = self.d / divisor;
     }
 }
 
 impl From<i64> for Rational {
     // TODO
-    
+    fn from(n: i64) -> Rational {
+        Rational { n:n , d: 1}
+    }
 }
