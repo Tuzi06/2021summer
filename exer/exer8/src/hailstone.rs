@@ -32,7 +32,7 @@ pub fn hailstone_sequence_prealloc(n: u64) -> Vec<u64> {
     let mut i = 0;
     value = n;
     while i <length{
-        seq.push(value);
+        seq.insert(i,value);
         value = hailstone(value);
         i = i + 1;
     }
