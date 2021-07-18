@@ -1,4 +1,3 @@
-
 fn gcd(a: i64, b: i64) -> i64 {
     // TODO
     let mut common_divisor = 0;
@@ -15,8 +14,8 @@ fn gcd(a: i64, b: i64) -> i64 {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Rational {
     // TODO
-    n: i64,
-    d: i64,
+    pub n: i64,
+    pub d: i64,
 }
 
 impl Rational {
@@ -35,6 +34,6 @@ impl Rational {
 impl From<i64> for Rational {
     // TODO
     fn from(n: i64) -> Rational {
-        Rational { n:n , d: 1}
+        Rational { n: n , d: 1}
     }
 }
