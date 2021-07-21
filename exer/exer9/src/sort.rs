@@ -1,7 +1,7 @@
 use rand::Rng;
 
 
-const INSERTION_SORT_CUTOFF: usize = 80;
+const INSERTION_SORT_CUTOFF: usize = 90;
 
 /// Sort v[left..=right] in-place with insertion sort.
 pub fn insertion_sort<T: Copy + Ord>(v: &mut Vec<T>, left: usize, right: usize) {
@@ -55,6 +55,16 @@ pub fn quicksort_partial<T: Copy + Ord>(v: &mut Vec<T>, left: usize, right: usiz
     if  left >= right{
         return
     }
+    // if right - left ==1{
+    //     if v[left]>v[right]{
+    //         let temp = v[left];
+    //         v[left] = v[right];
+    //         v[right] = temp;
+    //     }
+    //     else {
+    //         return;
+    //     }
+    // }
     else if right - left < INSERTION_SORT_CUTOFF{
         insertion_sort(v,left,right);
         return;

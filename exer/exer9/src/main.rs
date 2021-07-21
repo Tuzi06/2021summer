@@ -25,10 +25,11 @@ fn main() {
 
     let mut v2 = Vec::from([1, 6, 2, 4, 8, 2, 1, 4]);
     sort::quicksort(&mut v2);
+    println!{"{:?}",v2};
     
-    let mut v3: Vec<char> = "hello world".chars().collect();
-    sort::quicksort(&mut v3);
-    println!("{:?}", v3);
+    //let mut v3: Vec<char> = "hello world".chars().collect();
+    //sort::quicksort(&mut v3);
+    //println!("{:?}", v3);
 
 
 }
