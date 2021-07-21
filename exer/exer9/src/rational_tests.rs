@@ -12,7 +12,7 @@ fn rational_test() {
 
     //test display
     let four3= Rational::new(6, 8);
-    let four4 = Rational::new(6, 8);
     assert_eq!(f64::from(four3),0.75);
-    asser_eq!(four4.into(),0.75);
+    let f: f64 = r.into();
+    assert_eq!(f,0.75);
 }

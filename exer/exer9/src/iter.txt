@@ -1,0 +1,1 @@
+.into_iter() mutably-borrow self. It creates a consuming iterator.
