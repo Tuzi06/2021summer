@@ -50,6 +50,10 @@ pub fn partition<T: Copy + Ord>(v: &mut Vec<T>, left: usize, right: usize) -> us
     pos
 }
 
-pub fn qucksort_partial<T: Copy + Ord>(v: &mut Vec<T>, left: usize, right: usize) -> usize{
+pub fn quicksort_partial<T: Copy + Ord>(v: &mut Vec<T>, left: usize, right: usize) -> Vec<T>{
     
+}
+
+pub fn quicksort<T: Copy + Ord>(v: &mut Vec<T>) -> Vec<T>{
+    return quicksort_partial(v,0,v.len());
 }
