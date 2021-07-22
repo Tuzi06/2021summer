@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/daddd/Desktop/git/2021summer/A3/target/debug/build/typenum-94cf3725bec03280/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/home/daddd/Desktop/git/2021summer/A3/target/debug/build/typenum-94cf3725bec03280/out/op.rs
