@@ -1,15 +1,18 @@
-//      Benchmarking any_shape_zero_area: Collecting 100 samples in estimated 5.0778 s (                                                                                any_shape_zero_area     time:   [28.811 us 28.934 us 29.069 us]
+//      Benchmarking any_shape_zero_area: Collecting 100 samples in estimated 5.0778 s (                                                                                
+//      any_shape_zero_area     time:   [28.811 us 28.934 us 29.069 us]
 //      Found 3 outliers among 100 measurements (3.00%)
 //       1 (1.00%) low mild
 //       2 (2.00%) high mild
     
-//      Benchmarking any_circle_zero_area: Collecting 100 samples in estimated 5.0443 s                                                                                 any_circle_zero_area    time:   [16.357 us 16.441 us 16.528 us]
+//      Benchmarking any_circle_zero_area: Collecting 100 samples in estimated 5.0443 s                                                                                 
+//      any_circle_zero_area    time:   [16.357 us 16.441 us 16.528 us]
 //      Found 7 outliers among 100 measurements (7.00%)
 //       1 (1.00%) low mild
 //       3 (3.00%) high mild
 //       3 (3.00%) high severe
     
-//      Benchmarking any_rectangle_zero_area: Collecting 100 samples in estimated 5.0840                                                                                any_rectangle_zero_area time:   [16.903 us 16.988 us 17.072 us]
+//      Benchmarking any_rectangle_zero_area: Collecting 100 samples in estimated 5.0840                                                                                
+//      any_rectangle_zero_area time:   [16.903 us 16.988 us 17.072 us]
 //      Found 3 outliers among 100 measurements (3.00%)
 //       3 (3.00%) high mild
     
