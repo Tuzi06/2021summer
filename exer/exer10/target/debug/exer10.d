@@ -1,0 +1,1 @@
+/home/daddd/Desktop/git/2021summer/exer/exer10/target/debug/exer10: /home/daddd/Desktop/git/2021summer/exer/exer10/src/dynamic.rs /home/daddd/Desktop/git/2021summer/exer/exer10/src/files.rs /home/daddd/Desktop/git/2021summer/exer/exer10/src/lib.rs /home/daddd/Desktop/git/2021summer/exer/exer10/src/main.rs /home/daddd/Desktop/git/2021summer/exer/exer10/src/tests.rs
