@@ -17,6 +17,14 @@ pub struct WorkQueue<TaskType: 'static + Task + Send> {
 impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
     pub fn new(n_workers: usize) -> WorkQueue<TaskType> {
         // TODO: create the channels; start the worker threads; record their JoinHandles
+        WorkQueue{
+            send_tasks:None,
+            recv_tasks: recv(),
+            recv_output:recievers.recv(),
+            workers: Vec::default(),
+        }
+          
+    
     }
 
     fn run(recv_tasks: spmc::Receiver<TaskType>, send_output: mpsc::Sender<TaskType::Output>) {

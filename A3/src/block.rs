@@ -3,6 +3,7 @@ use digest::consts::U32;
 use sha2::digest::generic_array::GenericArray;
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
+use std::ptr::null;
 use std::sync;
 
 type Hash = GenericArray<u8, U32>;
@@ -19,14 +20,25 @@ pub struct Block {
 impl Block {
     pub fn initial(difficulty: u8) -> Block {
         // TODO: create and return a new initial block
+        Block {
+            prev_hash: Hash::default(),
+            generation:0,
+            difficulty:difficulty,
+            data:"".to_string(),
+            proof: None,
+        }
     }
 
     pub fn next(previous: &Block, data: String) -> Block {
         // TODO: create and return a block that could follow `previous` in the chain
+        previous.data = data;
+        return *previous;
     }
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
+        self.proof = Some(proof);
+        return self.hash_string();
     }
 
     pub fn hash_string(&self) -> String {
@@ -37,6 +49,8 @@ impl Block {
 
     pub fn hash_for_proof(&self, proof: u64) -> Hash {
         // TODO: return the block's hash as it would be if we set the proof to `proof`.
+        self.proof = Some(proof);
+        return self.hash();
     }
 
     pub fn hash(&self) -> Hash {
