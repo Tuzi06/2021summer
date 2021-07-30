@@ -15,7 +15,7 @@ public:
 
 int main(){
     ifstream ("input.txt");
-    ofstream ("output.txt");
+    
 
 
 }
