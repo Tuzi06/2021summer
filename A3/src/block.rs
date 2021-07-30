@@ -31,14 +31,18 @@ impl Block {
 
     pub fn next(previous: &Block, data: String) -> Block {
         // TODO: create and return a block that could follow `previous` in the chain
-        previous.data = data;
-        return *previous;
+        Block{
+            prev_hash: previous.hash(),
+            generation:0,
+            difficulty:0,
+            data:data,
+            proof: None,
+        }
     }
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
-        self.proof = Some(proof);
-        return self.hash_string();
+
     }
 
     pub fn hash_string(&self) -> String {
@@ -55,8 +59,8 @@ impl Block {
 
     pub fn hash(&self) -> Hash {
         // self.proof.unwrap() panics if block not mined
-        let p = self.proof.unwrap();
-        self.hash_for_proof(p)
+        let p= self.proof.unwrap();
+        
     }
 
     pub fn set_proof(self: &mut Block, proof: u64) {
@@ -65,6 +69,7 @@ impl Block {
 
     pub fn is_valid_for_proof(&self, proof: u64) -> bool {
         // TODO: would this block be valid if we set the proof to `proof`?
+        self.proof  == Some(proof)
     }
 
     pub fn is_valid(&self) -> bool {

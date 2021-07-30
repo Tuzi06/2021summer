@@ -17,10 +17,15 @@ pub struct WorkQueue<TaskType: 'static + Task + Send> {
 impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
     pub fn new(n_workers: usize) -> WorkQueue<TaskType> {
         // TODO: create the channels; start the worker threads; record their JoinHandles
-        
+        let (sender, recivers) = spmc::channel();
+        let (senders, reciver) = mpsc::channel();
+
+        WorkQueue{
+            send_tasks: None,
+            recv_tasks: recivers,
+            recv_output: reciver,
+            workers:Vec::with_capacity(n_workers),
         }
-          
-    
     }
 
     fn run(recv_tasks: spmc::Receiver<TaskType>, send_output: mpsc::Sender<TaskType::Output>) {
@@ -28,11 +33,14 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         loop {
             let task_result = recv_tasks.recv();
             // NOTE: task_result will be Err() if the spmc::Sender has been destroyed and no more messages can be received here
+            let worker = thread
         }
     }
 
     pub fn enqueue(&mut self, t: TaskType) -> Result<(), mpsc::SendError<TaskType>> {
         // TODO: send this task to a worker
+        
+
     }
 
     // Helper methods that let you receive results in various ways
@@ -55,6 +63,9 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         // TODO: destroy the spmc::Sender so everybody knows no more tasks are incoming;
         // drain any pending tasks in the queue; wait for each worker thread to finish.
         // HINT: Vec.drain(..)
+        self.send_tasks = None;
+
+        
     }
 }
 
