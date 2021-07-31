@@ -148,6 +148,11 @@ struct MiningTask {
 
 impl MiningTask {
     // TODO: implement MiningTask::new(???) -> MiningTask
+    pub fn new()->MiningTask{
+        MiningTask{
+            block:
+        }
+    }
 }
 
 impl Task for MiningTask {
