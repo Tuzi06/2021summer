@@ -2,7 +2,9 @@ use crate::queue::{Task, WorkQueue};
 use digest::consts::U32;
 use sha2::digest::generic_array::GenericArray;
 use sha2::{Digest, Sha256};
+use std::convert::TryInto;
 use std::fmt::Write;
+use std::ops::Add;
 use std::ptr::null;
 use std::sync;
 
@@ -33,7 +35,7 @@ impl Block {
         // TODO: create and return a block that could follow `previous` in the chain
         Block{
             prev_hash: previous.hash(),
-            generation:0,
+            generation:previous.generation+1,
             difficulty:previous.difficulty,
             data:data,
             proof: None,
@@ -42,7 +44,13 @@ impl Block {
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
-           return String::from ("asdasd");
+        if self.proof == Some(proof){
+            let mut hash_string =String::new();
+            write!(&mut hash_string,"{:02x}",self.prev_hash).unwrap();
+            hash_string= hash_string + ":"+ &(self.generation.to_string())+ ":"+ &(self.difficulty.to_string())+":"+ &self.data + ":"+ &(self.proof.unwrap().to_string());
+            return hash_string;
+        }
+        return String::from("");
     }
 
     pub fn hash_string(&self) -> String {
@@ -53,8 +61,13 @@ impl Block {
 
     pub fn hash_for_proof(&self, proof: u64) -> Hash {
         // TODO: return the block's hash as it would be if we set the proof to `proof`.
-        
-        
+        if self.proof == Some(proof){
+            let mut hasher = Sha256::new();
+            hasher.update(self.hash_string());
+            let result = hasher.finalize();
+            return  result;
+        }
+        return Hash::default();
     }
 
     pub fn hash(&self) -> Hash {
@@ -70,7 +83,22 @@ impl Block {
 
     pub fn is_valid_for_proof(&self, proof: u64) -> bool {
         // TODO: would this block be valid if we set the proof to `proof`?
-        self.proof  == Some(proof)
+        if self.proof ==Some(proof){
+            let n_bytes =self.difficulty/8;
+            let n_bits = self. difficulty%8;
+            let hash_value = self.hash();
+            for i in 32-n_bytes..32{
+                println!("{}",hash_value[i as usize]);
+                if hash_value[i as usize]!= 0u8{
+                    return false;
+                }
+            }
+            if hash_value[31-n_bytes as usize] %(1<<n_bits) != 0{
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     pub fn is_valid(&self) -> bool {
@@ -93,11 +121,12 @@ impl Block {
 
     pub fn mine_range(self: &Block, workers: usize, start: u64, end: u64, chunks: u64) -> u64 {
         // TODO: with `workers` threads, check proof values in the given range, breaking up
-	// into `chunks` tasks in a work queue. Return the first valid proof found.
+	    // into `chunks` tasks in a work queue. Return the first valid proof found.
         // HINTS:
         // - Create and use a queue::WorkQueue.
         // - Use sync::Arc to wrap a clone of self for sharing.
-        return 0u64;
+        return start;
+        
     }
 
     pub fn mine_for_proof(self: &Block, workers: usize) -> u64 {
@@ -126,6 +155,6 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
-        return Some(0u64)
+        return Some(0u64);
     }
 }

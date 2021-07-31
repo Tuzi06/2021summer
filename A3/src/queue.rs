@@ -44,7 +44,7 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
             // NOTE: task_result will be Err() if the spmc::Sender has been destroyed and no more messages can be received here
             match task_result {
                 Ok(task)=>{
-                    send_output.send(task.run().unwrap());   
+                    send_output.send(task.run().unwrap()); 
                 }
                 Err(e)=>{
                     break;
@@ -56,7 +56,7 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
     pub fn enqueue(&mut self, t: TaskType) -> Result<(), mpsc::SendError<TaskType>> {
         // TODO: send this task to a worker
         match self.send_tasks{
-            Some(task)=>{
+            Some(ref mut task)=>{
                 return task.send(t);
             }
             None=>{
@@ -96,7 +96,7 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         }
         let busy_workers = self.workers.drain(1..);
         for worker in busy_workers{
-            worker.join();
+            worker.join().unwrap();
         }
     }
 }
