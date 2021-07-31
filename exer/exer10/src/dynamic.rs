@@ -1,23 +1,27 @@
-//      Benchmarking any_shape_zero_area: Collecting 100 samples in estimated 5.0778 s (                                                                                
-//      any_shape_zero_area     time:   [28.811 us 28.934 us 29.069 us]
-//      Found 3 outliers among 100 measurements (3.00%)
-//       1 (1.00%) low mild
-//       2 (2.00%) high mild
-    
-//      Benchmarking any_circle_zero_area: Collecting 100 samples in estimated 5.0443 s                                                                                 
-//      any_circle_zero_area    time:   [16.357 us 16.441 us 16.528 us]
-//      Found 7 outliers among 100 measurements (7.00%)
-//       1 (1.00%) low mild
-//       3 (3.00%) high mild
-//       3 (3.00%) high severe
-    
-//      Benchmarking any_rectangle_zero_area: Collecting 100 samples in estimated 5.0840                                                                                
-//      any_rectangle_zero_area time:   [16.903 us 16.988 us 17.072 us]
-//      Found 3 outliers among 100 measurements (3.00%)
-//       3 (3.00%) high mild
+// Zero Area Checks/any_shape_zero_area                        
+//                         time:   [32.278 us 32.885 us 33.600 us]
+//                         change: [-26.215% -23.404% -20.773%] (p = 0.00 < 0.05)
+//                         Performance has improved.
+// Found 6 outliers among 100 measurements (6.00%)
+//   4 (4.00%) high mild
+//   2 (2.00%) high severe
+// Benchmarking Zero Area Checks/any_circle_zero_area: Collecting 100 samples in es                                                                                Zero Area Checks/any_circle_zero_area                        
+//                         time:   [16.287 us 16.417 us 16.576 us]
+//                         change: [-12.582% -11.326% -10.039%] (p = 0.00 < 0.05)
+//                         Performance has improved.
+// Found 6 outliers among 100 measurements (6.00%)
+//   5 (5.00%) high mild
+//   1 (1.00%) high severe
+// Benchmarking Zero Area Checks/any_rectangle_zero_area: Collecting 100 samples in                                                                                Zero Area Checks/any_rectangle_zero_area                        
+//                         time:   [16.656 us 16.733 us 16.822 us]
+//                         change: [-34.298% -29.947% -25.435%] (p = 0.00 < 0.05)
+//                         Performance has improved.
+// Found 6 outliers among 100 measurements (6.00%)
+//   3 (3.00%) high mild
+//   3 (3.00%) high severe
+
     
 
-use rand::Rng;
 
 pub trait Shape {
     fn area(&self) -> f64;

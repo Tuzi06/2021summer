@@ -34,7 +34,7 @@ impl Block {
         Block{
             prev_hash: previous.hash(),
             generation:0,
-            difficulty:0,
+            difficulty:previous.difficulty,
             data:data,
             proof: None,
         }
@@ -42,7 +42,7 @@ impl Block {
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
-
+           return String::from ("asdasd");
     }
 
     pub fn hash_string(&self) -> String {
@@ -53,13 +53,14 @@ impl Block {
 
     pub fn hash_for_proof(&self, proof: u64) -> Hash {
         // TODO: return the block's hash as it would be if we set the proof to `proof`.
-        self.proof = Some(proof);
-        return self.hash();
+        
+        
     }
 
     pub fn hash(&self) -> Hash {
         // self.proof.unwrap() panics if block not mined
-        let p= self.proof.unwrap();
+        let p = self.proof.unwrap();
+        self.hash_for_proof(p)
         
     }
 
@@ -96,6 +97,7 @@ impl Block {
         // HINTS:
         // - Create and use a queue::WorkQueue.
         // - Use sync::Arc to wrap a clone of self for sharing.
+        return 0u64;
     }
 
     pub fn mine_for_proof(self: &Block, workers: usize) -> u64 {
@@ -124,5 +126,6 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
+        return Some(0u64)
     }
 }

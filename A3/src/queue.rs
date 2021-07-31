@@ -1,5 +1,5 @@
 use std::sync::mpsc;
-use std::thread;
+use std::{primitive, thread};
 
 pub trait Task {
     type Output: Send;
@@ -19,13 +19,22 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         // TODO: create the channels; start the worker threads; record their JoinHandles
         let (sender, recivers) = spmc::channel();
         let (senders, reciver) = mpsc::channel();
-
+        let mut worker:Vec<thread::JoinHandle<()>>=Vec::new();
+        for i in 0..n_workers{
+            let snd = senders.clone();
+            let rec = recivers.clone();
+            worker.push(thread::spawn( || {
+                WorkQueue::run(rec,snd);
+            }));
+        }
         WorkQueue{
-            send_tasks: None,
+            send_tasks: Some(sender),
             recv_tasks: recivers,
             recv_output: reciver,
-            workers:Vec::with_capacity(n_workers),
+            workers:worker,
         }
+
+        
     }
 
     fn run(recv_tasks: spmc::Receiver<TaskType>, send_output: mpsc::Sender<TaskType::Output>) {
@@ -33,14 +42,28 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         loop {
             let task_result = recv_tasks.recv();
             // NOTE: task_result will be Err() if the spmc::Sender has been destroyed and no more messages can be received here
-            let worker = thread
+            match task_result {
+                Ok(task)=>{
+                    send_output.send(task.run().unwrap());   
+                }
+                Err(e)=>{
+                    break;
+                }
+            }
         }
     }
 
     pub fn enqueue(&mut self, t: TaskType) -> Result<(), mpsc::SendError<TaskType>> {
         // TODO: send this task to a worker
-        
-
+        match self.send_tasks{
+            Some(task)=>{
+                return task.send(t);
+            }
+            None=>{
+                return Err(mpsc::SendError(t));
+            }
+        }
+       
     }
 
     // Helper methods that let you receive results in various ways
@@ -63,9 +86,11 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         // TODO: destroy the spmc::Sender so everybody knows no more tasks are incoming;
         // drain any pending tasks in the queue; wait for each worker thread to finish.
         // HINT: Vec.drain(..)
-        self.send_tasks = None;
-
-        
+        self.send_tasks =None;
+        let message = self.recv_tasks.recv();
+        for worker in self.workers{
+            worker.join();
+        }
     }
 }
 
