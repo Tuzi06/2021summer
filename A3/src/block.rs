@@ -2,10 +2,7 @@ use crate::queue::{Task, WorkQueue};
 use digest::consts::U32;
 use sha2::digest::generic_array::GenericArray;
 use sha2::{Digest, Sha256};
-use std::convert::TryInto;
 use std::fmt::Write;
-use std::ops::Add;
-use std::ptr::null;
 use std::sync;
 
 type Hash = GenericArray<u8, U32>;
@@ -125,9 +122,20 @@ impl Block {
         // HINTS:
         // - Create and use a queue::WorkQueue.
         // - Use sync::Arc to wrap a clone of self for sharing.
-        return start;
-        
-    }
+
+        let mut work = WorkQueue::<MiningTask>::new(workers);
+        let block = sync::Arc::new(self.clone());
+         let range = (end-start)/chunks;
+         for i in 1..=chunks{
+            let task = MiningTask::new(block.clone(),start,start+i*range);
+            work.enqueue(task).unwrap();
+        }
+        for _ in 0..chunks {
+            let r = work.recv();
+
+        }
+        return u64::MIN;
+    }   
 
     pub fn mine_for_proof(self: &Block, workers: usize) -> u64 {
         let range_start: u64 = 0;
@@ -144,13 +152,17 @@ impl Block {
 struct MiningTask {
     block: sync::Arc<Block>,
     // TODO: more fields as needed
+    start:u64,
+    end:u64,
 }
 
 impl MiningTask {
     // TODO: implement MiningTask::new(???) -> MiningTask
-    pub fn new()->MiningTask{
+    pub fn new(block:sync::Arc<Block>, start:u64, end:u64)->MiningTask{
         MiningTask{
-            block:
+            block:block,
+            start:start,
+            end:end,
         }
     }
 }
@@ -160,6 +172,11 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
-        return Some(0u64);
+        for i in self.start..self.end{
+            if self.block.is_valid_for_proof(i){
+                return Some(i);
+            }
+        }
+        return None;
     }
 }

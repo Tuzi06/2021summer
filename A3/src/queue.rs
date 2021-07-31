@@ -20,7 +20,7 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         let (sender, recivers) = spmc::channel();
         let (senders, reciver) = mpsc::channel();
         let mut worker:Vec<thread::JoinHandle<()>>=Vec::new();
-        for i in 0..n_workers{
+        for _ in 0..n_workers{
             let snd = senders.clone();
             let rec = recivers.clone();
             worker.push(thread::spawn( || {
@@ -44,9 +44,9 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
             // NOTE: task_result will be Err() if the spmc::Sender has been destroyed and no more messages can be received here
             match task_result {
                 Ok(task)=>{
-                    send_output.send(task.run().unwrap()); 
+                    send_output.send(task.run().unwrap()).unwrap(); 
                 }
-                Err(e)=>{
+                Err(_)=>{
                     break;
                 }
             }

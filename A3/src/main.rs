@@ -24,21 +24,21 @@ fn main() {
     // write!(&mut output, "{:02x}", b1.hash()).unwrap();
     // println!("{}",output);
 
-    let mut b0 = block::Block::initial(19);
+    // let mut b0 = block::Block::initial(19);
 
-    println!("{}",19/8);
-    println!("{}",19%8);
-    b0.set_proof(87745);
-    let mut b1 = block::Block::next(&b0, String::from("hash example 1234"));
-    b1.set_proof(1407891);
-    let mut output = String::new();
-    println!("{:?}",b1.hash_string());
-    println!("{:?}",b1.hash());
-    write!(&mut output, "{:02x}", b1.hash()).unwrap();
-    println!("{}",output);
-    println!("{}",   b1.is_valid());
+    // println!("{}",19/8);
+    // println!("{}",19%8);
+    // b0.set_proof(87745);
+    // let mut b1 = block::Block::next(&b0, String::from("hash example 1234"));
+    // b1.set_proof(1407891);
+    // let mut output = String::new();
+    // println!("{:?}",b1.hash_string());
+    // println!("{:?}",b1.hash());
+    // write!(&mut output, "{:02x}", b1.hash()).unwrap();
+    // println!("{}",output);
+    // println!("{}",   b1.is_valid());
 
-    //println!("{}",1<<19%8);
+    println!("{}",8*(1<<16)/2345);
 
 }
 
