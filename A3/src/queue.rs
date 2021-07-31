@@ -87,8 +87,15 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
         // drain any pending tasks in the queue; wait for each worker thread to finish.
         // HINT: Vec.drain(..)
         self.send_tasks =None;
-        let message = self.recv_tasks.recv();
-        for worker in self.workers{
+        loop{
+            let message = self.recv_tasks.recv();
+            match message{
+                Err(_)=>{break}
+                _=>{continue}
+            }
+        }
+        let busy_workers = self.workers.drain(1..);
+        for worker in busy_workers{
             worker.join();
         }
     }
