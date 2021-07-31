@@ -132,7 +132,10 @@ impl Block {
         }
         for _ in 0..chunks {
             let r = work.recv();
-
+            if block.is_valid_for_proof(r) {
+                work.shutdown();
+            }
+            return r;
         }
         return u64::MIN;
     }   
