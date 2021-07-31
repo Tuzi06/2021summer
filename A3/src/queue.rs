@@ -1,5 +1,5 @@
 use std::sync::mpsc;
-use std::{primitive, thread};
+use std::thread;
 
 pub trait Task {
     type Output: Send;
