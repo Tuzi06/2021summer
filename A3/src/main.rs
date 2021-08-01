@@ -3,19 +3,19 @@ pub mod block;
 
 fn main() {
     // // Nothing is required here, but it may be useful for testing.
-    let mut b0 = block::Block::initial(16);
-    // // println!("{}",  b0.is_valid_for_proof(0));
-    b0.set_proof(56231);
-    // // println!("{}",  b0.is_valid_for_proof(56231));
-    // // println!("{}",   b0.is_valid());
-    let mut b1 = block::Block::next(&b0, String::from("message"));
-    b1.set_proof(2159);
-    use std::fmt::Write;
-    let mut output = String::new();
+    // let mut b0 = block::Block::initial(16);
+    // // // println!("{}",  b0.is_valid_for_proof(0));
+    // b0.set_proof(56231);
+    // println!("{}",  b0.is_valid_for_proof(56231));
+    // println!("{}",   b0.is_valid());
+    // let mut b1 = block::Block::next(&b0, String::from("message"));
+    // b1.set_proof(2159);
+    // use std::fmt::Write;
+    // let mut output = String::new();
 
-    //println!("{:?}",b0.hash_string());
-    write!(&mut output, "{:02x}", b1.hash()).unwrap();
-    println!("{}",output);
+    // //println!("{:?}",b0.hash_string());
+    // write!(&mut output, "{:02x}", b1.hash()).unwrap();
+    // println!("{}",output);
 
     //println!("{:?}", b0.hash());
 
@@ -38,26 +38,26 @@ fn main() {
     // println!("{}",output);
     // println!("{}",   b1.is_valid());
 
-    println!("{}",8*(1<<20));
-    println!("{}",8*(1<<20)/2345);
-    // println!("{}",11/3);
+    // println!("{}",8*(1<<20));
+    // println!("{}",8*(1<<20)/2345);
+    // // println!("{}",11/3);
     
     let mut b0 = block::Block::initial(7);
     b0.mine(200);
 
     //b0.set_proof(385);
 
-    // println!("{}",b0.is_valid());
+    println!("{}",b0.is_valid());
     println!("{}", b0.hash_string());
-    // println!("{:02x}", b0.hash());
-    let mut b1 = block::Block::next(&b0, String::from("this is an interesting message"));
-    b1.mine(200);
-    println!("{}", b1.hash_string());
-    // println!("{:02x}", b1.hash());
-    let mut b2 = block::Block::next(&b1, String::from("this is not interesting"));
-    b2.mine(200);
-    println!("{}", b2.hash_string());
-    //println!("{:02x}", b2.hash());
+    println!("{:02x}", b0.hash());
+    // let mut b1 = block::Block::next(&b0, String::from("this is an interesting message"));
+    // b1.mine(200);
+    // println!("{}", b1.hash_string());
+    // // println!("{:02x}", b1.hash());
+    // let mut b2 = block::Block::next(&b1, String::from("this is not interesting"));
+    // b2.mine(200);
+    // println!("{}", b2.hash_string());
+    // //println!("{:02x}", b2.hash());
 
 
 }

@@ -1,3 +1,6 @@
-1. 
+1. The output which is u64, is not thread safe. This means that it does not implement send or sync.
+So that in order to send the output in the channel, we need to spcified the output as Send.
+
 2.
+
 3.

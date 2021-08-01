@@ -3,7 +3,7 @@ use digest::consts::U32;
 use sha2::digest::generic_array::GenericArray;
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
-use std::sync;
+use std:: sync;
 
 type Hash = GenericArray<u8, U32>;
 
@@ -77,12 +77,13 @@ impl Block {
             let n_bytes =self.difficulty/8;
             let n_bits = self. difficulty%8;
             let hash_value = self.hash_for_proof(proof);
+
             for i in 32-n_bytes..32{
                 if hash_value[i as usize]!= 0u8{
                     return false;
                 }
             }
-            if hash_value[31-n_bytes as usize] %(1<<n_bits) != 0{
+            if hash_value[31- n_bytes as usize] %(1<<n_bits) != 0{
                 return false;
             }
             return true;
