@@ -149,6 +149,7 @@ impl Block {
         }
         for _ in 0..=block_num {
             let r = work.recv();
+            work.shutdown();
             return r;
         }
         return u64::MIN;
