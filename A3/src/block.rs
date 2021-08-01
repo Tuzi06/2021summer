@@ -123,14 +123,24 @@ impl Block {
             block_num = end;
         }
          
-        let start_point = 0;
-        let end_point = range;
+        let mut start_point = 0;
+        let mut end_point = range;
 
-        for i in 0..block_num{
-            let task = MiningTask::new(block.clone(),start_point+ i*range,end_point+ i*range) ;
+        for _ in 0..=block_num{
+            start_point = start_point+ range;
+            end_point = end_point+ range;
+            
+            if end_point >=end{
+                end_point = end+1;
+            }
+            if start_point > end{
+                break;
+            }
+            //println!("i {}  start {}   end {}", i, &start_point, end_point);
+            let task = MiningTask::new(block.clone(),start_point,end_point);
             work.enqueue(task).unwrap();
         }
-        for _ in 0..chunks {
+        for _ in 0..=block_num {
             let r = work.recv();
             return r;
         }
@@ -172,7 +182,8 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
-        for i in self.start..=self.end{
+        //println!("{}   {}",self.start, self.end);
+        for i in self.start..self.end{
             if self.block.is_valid_for_proof(i){
                 return Some(i);
             }
