@@ -48,10 +48,7 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
                         Some(result) => {
                             send_output.send(result).unwrap();
                         }
-                        None => {
-                            println!{"break fuck"};
-                            return;
-                            
+                        None=>{
                         }
                     }
                 }

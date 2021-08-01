@@ -41,13 +41,10 @@ impl Block {
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
-        if self.proof == Some(proof){
-            let mut hash_string =String::new();
-            write!(&mut hash_string,"{:02x}",self.prev_hash).unwrap();
-            hash_string= hash_string + ":"+ &(self.generation.to_string())+ ":"+ &(self.difficulty.to_string())+":"+ &self.data + ":"+ &(self.proof.unwrap().to_string());
-            return hash_string;
-        }
-        return String::from("");
+        let mut hash_string =String::new();
+        write!(&mut hash_string,"{:02x}",self.prev_hash).unwrap();
+        hash_string= hash_string + ":"+ &(self.generation.to_string())+ ":"+ &(self.difficulty.to_string())+":"+ &self.data + ":"+ &(proof.to_string());
+        return hash_string;
     }
 
     pub fn hash_string(&self) -> String {
@@ -58,13 +55,10 @@ impl Block {
 
     pub fn hash_for_proof(&self, proof: u64) -> Hash {
         // TODO: return the block's hash as it would be if we set the proof to `proof`.
-        if self.proof == Some(proof){
-            let mut hasher = Sha256::new();
-            hasher.update(self.hash_string());
-            let result = hasher.finalize();
-            return  result;
-        }
-        return Hash::default();
+        let mut hasher = Sha256::new();
+        hasher.update(self.hash_string_for_proof(proof));
+        let result = hasher.finalize();
+        return  result;
     }
 
     pub fn hash(&self) -> Hash {
@@ -80,12 +74,10 @@ impl Block {
 
     pub fn is_valid_for_proof(&self, proof: u64) -> bool {
         // TODO: would this block be valid if we set the proof to `proof`?
-        if self.proof ==Some(proof){
             let n_bytes =self.difficulty/8;
             let n_bits = self. difficulty%8;
-            let hash_value = self.hash();
+            let hash_value = self.hash_for_proof(proof);
             for i in 32-n_bytes..32{
-                println!("{}",hash_value[i as usize]);
                 if hash_value[i as usize]!= 0u8{
                     return false;
                 }
@@ -94,8 +86,6 @@ impl Block {
                 return false;
             }
             return true;
-        }
-        return false;
     }
 
     pub fn is_valid(&self) -> bool {
@@ -125,23 +115,24 @@ impl Block {
 
         let mut work = WorkQueue::<MiningTask>::new(workers);
         let block = sync::Arc::new(self.clone());
-         let mut range = (end-start)/chunks;
-         let mut block_num =chunks;
-         println! {"{} {} {}", start, end, range};
-         if range ==0{
+        let mut range = (end-start)/chunks;
+        let mut block_num =chunks;
+         
+        if range ==0{
             range = 1;
             block_num = end;
-         }
-         for i in 0..block_num{
-            //println!("start send start: {}  end: {}", start+ i*range,start+ i*range );
-            let task = MiningTask::new(block.clone(),start+ i*range,start+range+  i*range);
+        }
+         
+        let start_point = 0;
+        let end_point = range;
+
+        for i in 0..block_num{
+            let task = MiningTask::new(block.clone(),start_point+ i*range,end_point+ i*range) ;
             work.enqueue(task).unwrap();
         }
         for _ in 0..chunks {
-            println!("start recieve");
-            let r = work.try_recv();
-            println!("{:?}",r);
-            return r.unwrap();
+            let r = work.recv();
+            return r;
         }
         return u64::MIN;
     }   
@@ -181,7 +172,6 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
-        println!("start run start: {} end {}", self.start, self.end);
         for i in self.start..=self.end{
             if self.block.is_valid_for_proof(i){
                 return Some(i);
