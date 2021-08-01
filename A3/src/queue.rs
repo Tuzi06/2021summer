@@ -1,5 +1,5 @@
 use std::sync::mpsc;
-use std::thread;
+use std::{thread};
 
 pub trait Task {
     type Output: Send;
@@ -44,7 +44,16 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
             // NOTE: task_result will be Err() if the spmc::Sender has been destroyed and no more messages can be received here
             match task_result {
                 Ok(task)=>{
-                    send_output.send(task.run().unwrap()).unwrap(); 
+                    match task.run() {
+                        Some(result) => {
+                            send_output.send(result).unwrap();
+                        }
+                        None => {
+                            println!{"break fuck"};
+                            return;
+                            
+                        }
+                    }
                 }
                 Err(_)=>{
                     break;

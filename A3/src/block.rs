@@ -125,17 +125,23 @@ impl Block {
 
         let mut work = WorkQueue::<MiningTask>::new(workers);
         let block = sync::Arc::new(self.clone());
-         let range = (end-start)/chunks;
-         for i in 1..=chunks{
-            let task = MiningTask::new(block.clone(),start,start+i*range);
+         let mut range = (end-start)/chunks;
+         let mut block_num =chunks;
+         println! {"{} {} {}", start, end, range};
+         if range ==0{
+            range = 1;
+            block_num = end;
+         }
+         for i in 0..block_num{
+            //println!("start send start: {}  end: {}", start+ i*range,start+ i*range );
+            let task = MiningTask::new(block.clone(),start+ i*range,start+range+  i*range);
             work.enqueue(task).unwrap();
         }
         for _ in 0..chunks {
-            let r = work.recv();
-            if block.is_valid_for_proof(r) {
-                work.shutdown();
-            }
-            return r;
+            println!("start recieve");
+            let r = work.try_recv();
+            println!("{:?}",r);
+            return r.unwrap();
         }
         return u64::MIN;
     }   
@@ -175,7 +181,8 @@ impl Task for MiningTask {
 
     fn run(&self) -> Option<u64> {
         // TODO: what does it mean to .run?
-        for i in self.start..self.end{
+        println!("start run start: {} end {}", self.start, self.end);
+        for i in self.start..=self.end{
             if self.block.is_valid_for_proof(i){
                 return Some(i);
             }
