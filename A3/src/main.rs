@@ -1,5 +1,5 @@
+pub mod block;
 pub mod queue;
-pub mod block; 
 
 fn main() {
     // // Nothing is required here, but it may be useful for testing.
@@ -41,13 +41,13 @@ fn main() {
     // println!("{}",8*(1<<20));
     // println!("{}",8*(1<<20)/2345);
     // // println!("{}",11/3);
-    
+
     let mut b0 = block::Block::initial(7);
     b0.mine(200);
 
     //b0.set_proof(385);
 
-    println!("{}",b0.is_valid());
+    println!("{}", b0.is_valid());
     println!("{}", b0.hash_string());
     println!("{:02x}", b0.hash());
     // let mut b1 = block::Block::next(&b0, String::from("this is an interesting message"));
@@ -58,8 +58,6 @@ fn main() {
     // b2.mine(200);
     // println!("{}", b2.hash_string());
     // //println!("{:02x}", b2.hash());
-
-
 }
 
 //8388608
