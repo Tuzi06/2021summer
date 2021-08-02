@@ -4,5 +4,5 @@ So that in order to send the output in the channel, we need to spcified the outp
 2. .iter() read the hash of the value bing moved directly, but .drain() has to be careful to update the hash to indicate that the cell is then empty, not just read it. 
 So that, to ensure thread safety, we have to use .drain() but not .iter().
 
-3.Arc<T> makes it thread safe to have multiple ownership of the same data, but it does not add thread safety to its data. Also & is not thread safe. 
+3.Arc<T> makes it thread safe to have multiple ownership of the same data, but it does not add thread safety to its data. Also & is not thread safe, and &des not own contents, so lifetime restrictions. 
 To in order be able to transfer in the channel. We need both Arc and the value it contain be thread safe. So that, we can not use &self, but have to safe.clone().
