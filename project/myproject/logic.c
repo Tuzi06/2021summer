@@ -1,4 +1,7 @@
 #include "logic.h"
+#include <stdio.h>
+
+
 
 int escapes(double cr, double ci, int it) {
   double zr = 0;
@@ -21,4 +24,11 @@ int escapes(double cr, double ci, int it) {
 int fact(int n) {
     if (n <= 1) return 1;
     else return n*fact(n-1);
+}
+
+int main()
+{
+
+  printf("sdafasdfasdfasdf");
+  return 0;
 }

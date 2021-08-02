@@ -41,9 +41,9 @@ impl Block {
 
     pub fn hash_string_for_proof(&self, proof: u64) -> String {
         // TODO: return the hash string this block would have if we set the proof to `proof`.
-        let mut hash_string = String::new();
-        write!(&mut hash_string, "{:02x}", self.prev_hash).unwrap();
-        hash_string = hash_string
+        let mut prev = String::new();
+        write!(&mut prev, "{:02x}", self.prev_hash).unwrap();
+        let hash_string = prev
             + ":"
             + &(self.generation.to_string())
             + ":"
@@ -84,13 +84,12 @@ impl Block {
         let n_bytes = self.difficulty / 8;
         let n_bits = self.difficulty % 8;
         let hash_value = self.hash_for_proof(proof);
-
-        for i in 32 - n_bytes..32 {
-            if hash_value[i as usize] != 0u8 {
+        for index in 0..n_bytes {
+            if hash_value[usize::from(32-index)] != 0u8 {
                 return false;
             }
         }
-        if hash_value[31 - n_bytes as usize] % (1 << n_bits) != 0 {
+        if hash_value[usize::from(31-n_bytes)] % (1 << n_bits) != 0 {
             return false;
         }
         return true;
@@ -135,9 +134,6 @@ impl Block {
         let mut end_point = range;
 
         for _ in 0..=block_num {
-            start_point = start_point + range;
-            end_point = end_point + range;
-
             if end_point >= end {
                 end_point = end + 1;
             }
@@ -146,13 +142,16 @@ impl Block {
             }
             let task = MiningTask::new(block.clone(), start_point, end_point);
             work.enqueue(task).unwrap();
+
+            start_point = start_point + range;
+            end_point = end_point + range;
         }
         for _ in 0..=block_num {
             let r = work.recv();
             work.shutdown();
             return r;
         }
-        return u64::MIN;
+        return u64::MAX;
     }
 
     pub fn mine_for_proof(self: &Block, workers: usize) -> u64 {

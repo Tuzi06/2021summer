@@ -164,41 +164,45 @@ package 'swig'
 
 # GraalVM
 
-graalvm_version = '20.2.0'
-graalvm_directory = "graalvm-ce-java11-#{graalvm_version}"
-remote_file '/opt/installers/graalvm.tar.gz' do
- source "https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-#{graalvm_version}/graalvm-ce-java11-linux-amd64-#{graalvm_version}.tar.gz"
-end
-execute 'tar zxf /opt/installers/graalvm.tar.gz' do
- cwd '/opt'
- creates "/opt/#{graalvm_directory}/release"
-end
-link '/opt/graalvm' do
- to "/opt/#{graalvm_directory}"
- link_type :symbolic
-end
-file '/etc/profile.d/graalvm.sh' do
- content 'PATH=${PATH}:/opt/graalvm/bin'
-end
+# graalvm_version = '20.2.0'
+# graalvm_directory = "graalvm-ce-java11-#{graalvm_version}"
+# remote_file '/opt/installers/graalvm.tar.gz' do
+#  source "https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-#{graalvm_version}/graalvm-ce-java11-linux-amd64-#{graalvm_version}.tar.gz"
+# end
+# execute 'tar zxf /opt/installers/graalvm.tar.gz' do
+#  cwd '/opt'
+#  creates "/opt/#{graalvm_directory}/release"
+# end
+# link '/opt/graalvm' do
+#  to "/opt/#{graalvm_directory}"
+#  link_type :symbolic
+# end
+# file '/etc/profile.d/graalvm.sh' do
+#  content 'PATH=${PATH}:/opt/graalvm/bin'
+# end
 # GraalVM's Python
-execute '/opt/graalvm/bin/gu install python' do
- creates "/opt/#{graalvm_directory}/bin/graalpython"
-end
+# execute '/opt/graalvm/bin/gu install python' do
+#  creates "/opt/#{graalvm_directory}/bin/graalpython"
+# end
 # GraalVM's Ruby
 # execute '/opt/graalvm/bin/gu install ruby' do
 #  creates "/opt/#{graalvm_directory}/bin/ruby"
 # end
 # GraalVM's LLVM (C, C++) tools
-execute '/opt/graalvm/bin/gu install llvm-toolchain' do
- creates "/opt/#{graalvm_directory}/bin/lli"
-end
+# execute '/opt/graalvm/bin/gu install llvm-toolchain' do
+#  creates "/opt/#{graalvm_directory}/bin/lli"
+# end
 
 
 # Example of compiling an executable in the recipe:
-#execute 'gcc -Wall -o /opt/hello-world hello.c' do
-#  cwd '/home/vagrant/project/hello-world'
-#  creates "/opt/hello-world"
-#end
+execute 'swig -python logic.i' do
+ cwd '/home/vagrant/project/myproject'
+ creates "/opt/hello-world.txt"
+end
+# execute 'python3 com.py' do
+#   cwd '/home/vagrant/project/myproject'
+#   creates "/opt/hello-world.txt"
+#  end
 
 # Example of simply starting an executable on 'vagrant provision':
 #execute 'killall hello-world; /opt/hello-world &' do
@@ -215,7 +219,7 @@ end
 #  creates "/etc/systemd/system/multi-user.target.wants/hello.service"
 #end
 
-# execute 'ui.html' do
+# execute 'com.py' do
 #   cwd project_home
 #   user username
 #   environment 'HOME' => user_home
