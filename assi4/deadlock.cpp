@@ -6,60 +6,38 @@
 
 using namespace std;
 
-class trans{
-private:
-    string transNum;
-    int count;
-
-public:
-    trans() {
-        transNum ='0';
-        count = 0;
-    }
-    trans(string i){
-        transNum =i;
-        count = 1;
-    }
-    void inc (){
-        count++;
-    }
-    
-    void dec (){
-        count--;
-    }
-
-    string getTransNum() {
-        return transNum;
-    }
-
-    int getCount (){
-        return count;
-    }
-};
-
-vector<trans> enstack(vector<trans> Stack, trans t){
-    Stack.push_back(t);
-    return Stack;
-}
-
-vector<trans> destack(vector<trans> Stack, trans t){
-   
-}
-
 int main(){
     ifstream fin ("input.txt");
     cout<<"good"<<endl;
+    
+    int size =0;
+    string *lock = new string[size];
+    string *object = new string[size];
+    string *trans = new string [size];
     while (fin.eof() == false){
         string s;
         fin >>s;
-        string sub1 = s.substr(0,2);
-        string sub2 = s.substr(3,4);
-
-        string tn = s.substr(1,1);
-        cout<< sub1<<endl;
-        cout<<sub2<<endl;
+        if (s.substr(3,1) =="S" || s.substr(3,1)=="X"){
+            size++;
+            string *newlock = new string[size];
+            string *newobject = new string[size];
+            
+            for(int i =0;i<size-1;i++){
+                newlock[i]=lock[i];
+                newobject[i]=object[i];
+            }
+            newobject[size-1]=s.substr(5,1);
+            newlock[size-1]= s.substr(3,1);
+            object = newobject;
+            lock = newlock;
+            
+        }
         
     }
-
+    for (int i=0;i<size;i++){
+            cout<<"lock: "<<lock[i]<<"   object: "<< object[i]<<endl;
+        }
+    delete[] lock;
+    delete[] object;
     return 0;
 }
