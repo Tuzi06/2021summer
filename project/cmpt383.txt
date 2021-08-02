@@ -1,0 +1,10 @@
+Idea: build a multi language system that can run a tetris game on a web page.
+
+system language: C++ for game logic
+
+scripting language: Python( other info needs display on the web like score, game time, rounds), 
+                    JavaScript( display the game ui and all other info)
+
+Inter-language communication method: SWIG(use for between C++ and python) and GraalVM(passing data from python to javascript and vise versa)
+
+Deployment technology: Vagrant VM
