@@ -84,6 +84,7 @@ int main(){
         string s;
         fin >>s;
         if (s.substr(3,1) =="S" || s.substr(3,1)=="X"){
+            //when we have the first exclusive clock
             if (size ==0){
                 if(s.substr(3,1)=="X"){
                     size++;
@@ -104,6 +105,7 @@ int main(){
                     trans = newtrans;
                 }
             }
+            //have a exclusive clock infront
             else if(s.substr(3,1) =="S" || s.substr(3,1)=="X"){
                 size++;
                 string *newtrans = new string[size];
@@ -122,7 +124,7 @@ int main(){
                 trans = newtrans;
             }
         }
-       
+        //abort or commit
         if(s.substr(3,1) =="A" || s.substr(3,1)=="C"){
             for(int i=0; i<size;i++){
                 if(trans[i]==s.substr(0,2)){
