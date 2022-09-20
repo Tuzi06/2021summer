@@ -1,0 +1,19 @@
+.into_iter() move self.
+It returns a IntoIter<T> where T is the type of the element in the input vector.
+The type of values are depended on the what the type of elments of the input vector is.
+.into_iter() iterates over the items, moving them into the new scope.
+
+.iter() borrow self.
+It retuns a slice Iter<T>, where T is the type of the element in the input.
+The type of values are depended on the what the type of elments of the input vector is.
+.iter() iterates over the items by reference.
+
+.iter_mut() mutably-borrow self.
+It return an iterator that allows modifying each value.
+It produces the mutable T value, where T is the type of the element in the input vector.
+.iter_mut() iterates over the items, giving a mutable reference to each item.
+
+.drain(..) mutably-borrow self.
+It returns the an iterator that contents the elements that is out of the range from the input vector.
+The type of values are depended on the what the type of elments of the input vector is.
+.drain(..) creates a draining iterator that removes the specified range in the vector and yields the removed items. When the iterator is dropped, all elements in the range are removed from the vector, even if the iterator was not fully consumed.  If the iterator is not dropped (with mem::forget for example), it is unspecified how many elements are removed.
